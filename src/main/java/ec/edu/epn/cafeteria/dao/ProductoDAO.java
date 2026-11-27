@@ -16,6 +16,7 @@ import java.util.Optional;
  */
 public class ProductoDAO {
 
+    private static final String SQL_SELECT = "SELECT ";
     private static final String COLUMNAS = "codigo, nombre, precio, cantidad_disponible, disponible";
 
     private final ConexionBD conexionBD;
@@ -41,7 +42,7 @@ public class ProductoDAO {
      * @throws SQLException si falla la consulta
      */
     public List<Producto> listarDisponibles() throws SQLException {
-        return listar("SELECT " + COLUMNAS + " FROM dbo.Producto"
+        return listar(SQL_SELECT + COLUMNAS + " FROM dbo.Producto"
                 + " WHERE disponible = 1 AND cantidad_disponible > 0 ORDER BY nombre");
     }
 
@@ -52,7 +53,7 @@ public class ProductoDAO {
      * @throws SQLException si falla la consulta
      */
     public List<Producto> listarTodos() throws SQLException {
-        return listar("SELECT " + COLUMNAS + " FROM dbo.Producto ORDER BY codigo");
+        return listar(SQL_SELECT + COLUMNAS + " FROM dbo.Producto ORDER BY codigo");
     }
 
     /**
@@ -63,7 +64,7 @@ public class ProductoDAO {
      * @throws SQLException si falla la consulta
      */
     public Optional<Producto> buscarPorCodigo(String codigo) throws SQLException {
-        String sql = "SELECT " + COLUMNAS + " FROM dbo.Producto WHERE codigo = ?";
+        String sql = SQL_SELECT + COLUMNAS + " FROM dbo.Producto WHERE codigo = ?";
         try (Connection cn = conexionBD.obtenerConexion();
              PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, codigo);

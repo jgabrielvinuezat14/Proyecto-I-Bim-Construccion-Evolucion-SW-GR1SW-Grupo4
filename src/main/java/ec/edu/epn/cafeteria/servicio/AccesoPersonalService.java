@@ -63,7 +63,7 @@ public class AccesoPersonalService {
 
         boolean codigoCoincide = igualesEnTiempoConstante(codigoAcceso.trim(), codigoEsperado.trim());
         boolean contrasenaCoincide = igualesEnTiempoConstante(contrasena, contrasenaEsperada);
-        if (!(codigoCoincide & contrasenaCoincide)) {
+        if (!(codigoCoincide && contrasenaCoincide)) {
             throw new IllegalArgumentException(MSG_CREDENCIALES_INVALIDAS);
         }
         return true;

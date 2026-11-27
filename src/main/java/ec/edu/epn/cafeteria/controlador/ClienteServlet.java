@@ -17,6 +17,10 @@ import java.io.IOException;
 @WebServlet(urlPatterns = {"/login", "/registro", "/logout"})
 public class ClienteServlet extends HttpServlet {
 
+    private static final String RUTA_MENU = "/menu";
+    private static final String CORREO = "correo";
+    private static final String MENSAJE = "mensaje";
+
     private final transient ClienteService clienteService;
 
     /** Crea el servlet con el servicio por defecto. */
@@ -51,7 +55,7 @@ public class ClienteServlet extends HttpServlet {
         }
         HttpSession sesionActual = request.getSession(false);
         if (sesionActual != null && sesionActual.getAttribute("cliente") != null) {
-            response.sendRedirect(request.getContextPath() + "/menu");
+            response.sendRedirect(request.getContextPath() + RUTA_MENU);
             return;
         }
         if ("/registro".equals(ruta)) {
@@ -86,15 +90,15 @@ public class ClienteServlet extends HttpServlet {
 
     private void procesarLogin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String correo = leerParametro(request, "correo", "correoInstitucional");
+        String correo = leerParametro(request, CORREO, "correoInstitucional");
         String contrasena = request.getParameter("contrasena");
-        request.setAttribute("correo", correo == null ? "" : correo.trim());
+        request.setAttribute(CORREO, correo == null ? "" : correo.trim());
         try {
             Cliente autenticado = clienteService.iniciarSesion(correo, contrasena);
             HttpSession sesion = iniciarSesionHttp(request, autenticado);
-            sesion.setAttribute("mensaje", "Sesión iniciada como " + autenticado.getNombre()
+            sesion.setAttribute(MENSAJE, "Sesión iniciada como " + autenticado.getNombre()
                     + " (" + autenticado.getCodigo() + ").");
-            response.sendRedirect(request.getContextPath() + "/menu");
+            response.sendRedirect(request.getContextPath() + RUTA_MENU);
         } catch (IllegalArgumentException | IllegalStateException e) {
             request.setAttribute("error", e.getMessage());
             request.getRequestDispatcher("/WEB-INF/vistas/login.jsp").forward(request, response);
@@ -109,9 +113,9 @@ public class ClienteServlet extends HttpServlet {
         try {
             Cliente registrado = clienteService.registrarCliente(datos, contrasena);
             HttpSession sesion = iniciarSesionHttp(request, registrado);
-            sesion.setAttribute("mensaje", "Cuenta registrada correctamente. Su código de cliente es "
+            sesion.setAttribute(MENSAJE, "Cuenta registrada correctamente. Su código de cliente es "
                     + registrado.getCodigo() + ".");
-            response.sendRedirect(request.getContextPath() + "/menu");
+            response.sendRedirect(request.getContextPath() + RUTA_MENU);
         } catch (IllegalArgumentException | IllegalStateException e) {
             request.setAttribute("error", e.getMessage());
             request.getRequestDispatcher("/WEB-INF/vistas/registro.jsp").forward(request, response);
@@ -123,8 +127,8 @@ public class ClienteServlet extends HttpServlet {
         if (sesion != null) {
             sesion.invalidate();
         }
-        request.getSession(true).setAttribute("mensaje", "Ha cerrado sesión correctamente.");
-        response.sendRedirect(request.getContextPath() + "/menu");
+        request.getSession(true).setAttribute(MENSAJE, "Ha cerrado sesión correctamente.");
+        response.sendRedirect(request.getContextPath() + RUTA_MENU);
     }
 
     private HttpSession iniciarSesionHttp(HttpServletRequest request, Cliente cliente) {
@@ -147,7 +151,7 @@ public class ClienteServlet extends HttpServlet {
         cliente.setApellido(recortar(request.getParameter("apellido")));
         cliente.setCedula(recortar(request.getParameter("cedula")));
         cliente.setCelular(recortar(request.getParameter("celular")));
-        cliente.setCorreoInstitucional(recortar(leerParametro(request, "correo", "correoInstitucional")));
+        cliente.setCorreoInstitucional(recortar(leerParametro(request, CORREO, "correoInstitucional")));
         return cliente;
     }
 

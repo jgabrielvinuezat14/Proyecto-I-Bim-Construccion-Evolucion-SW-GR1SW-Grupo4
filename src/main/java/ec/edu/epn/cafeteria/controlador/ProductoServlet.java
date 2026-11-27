@@ -18,6 +18,9 @@ import java.math.BigDecimal;
 @WebServlet(urlPatterns = {"/menu", "/admin/productos"})
 public class ProductoServlet extends HttpServlet {
 
+    private static final String NUEVO = "nuevo";
+    private static final String EDITAR = "editar";
+
     private final transient ProductoService productoService = new ProductoService();
 
     /**
@@ -55,7 +58,7 @@ public class ProductoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        boolean nuevo = "nuevo".equals(request.getParameter("accion"));
+        boolean nuevo = NUEVO.equals(request.getParameter("accion"));
         try {
             Producto producto = leerFormulario(request);
             if (nuevo) {
@@ -68,23 +71,23 @@ public class ProductoServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/admin/productos");
         } catch (IllegalArgumentException | IllegalStateException e) {
             request.setAttribute("error", e.getMessage());
-            mostrarAdministracion(request, response, nuevo ? "nuevo" : "editar");
+            mostrarAdministracion(request, response, nuevo ? NUEVO : EDITAR);
         }
     }
 
     private void mostrarAdministracion(HttpServletRequest request, HttpServletResponse response, String formulario)
             throws ServletException, IOException {
         request.setAttribute("productos", productoService.consultarTodos());
-        String editar = request.getParameter("editar");
+        String editar = request.getParameter(EDITAR);
         if (formulario == null && editar != null) {
             productoService.consultarTodos().stream()
                     .filter(p -> p.getCodigo().equals(editar))
                     .findFirst()
                     .ifPresent(p -> request.setAttribute("productoEditar", p));
-            formulario = "editar";
+            formulario = EDITAR;
         }
-        if (formulario == null && request.getParameter("nuevo") != null) {
-            formulario = "nuevo";
+        if (formulario == null && request.getParameter(NUEVO) != null) {
+            formulario = NUEVO;
         }
         request.setAttribute("formulario", formulario);
         request.getRequestDispatcher("/WEB-INF/vistas/admin-productos.jsp").forward(request, response);

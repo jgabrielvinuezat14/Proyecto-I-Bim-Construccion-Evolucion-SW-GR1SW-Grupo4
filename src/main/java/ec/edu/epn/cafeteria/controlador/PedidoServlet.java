@@ -29,6 +29,9 @@ public class PedidoServlet extends HttpServlet {
 
     private static final String SELECCION = "seleccion";
     private static final String REVISION = "revision";
+    private static final String CODIGO = "codigo";
+    private static final String PEDIDO_CONFIRMADO = "pedidoConfirmado";
+    private static final String ERROR = "error";
     private static final String MSG_CANTIDAD = "La cantidad debe ser un número entero positivo.";
 
     private final transient ProductoService productoService = new ProductoService();
@@ -72,13 +75,13 @@ public class PedidoServlet extends HttpServlet {
             switch (accion == null ? "" : accion) {
                 case "agregar" -> agregar(request, seleccion);
                 case "actualizar" -> actualizar(request, seleccion);
-                case "quitar" -> seleccion.removeIf(d -> d.getProducto().getCodigo().equals(request.getParameter("codigo")));
+                case "quitar" -> seleccion.removeIf(d -> d.getProducto().getCodigo().equals(request.getParameter(CODIGO)));
                 case "revisar" -> revisar(sesion, seleccion);
                 case "confirmar" -> {
                     Pedido pedido = gestionPedidoService.confirmarPedido(codigoCliente(sesion), seleccion);
                     sesion.removeAttribute(SELECCION);
                     sesion.removeAttribute(REVISION);
-                    sesion.setAttribute("pedidoConfirmado", pedido);
+                    sesion.setAttribute(PEDIDO_CONFIRMADO, pedido);
                 }
                 default -> throw new IllegalArgumentException("Acción no reconocida.");
             }
@@ -87,7 +90,7 @@ public class PedidoServlet extends HttpServlet {
             }
             response.sendRedirect(request.getContextPath() + "/mi-pedido");
         } catch (IllegalArgumentException | IllegalStateException e) {
-            request.setAttribute("error", e.getMessage());
+            request.setAttribute(ERROR, e.getMessage());
             mostrarMiPedido(request, response);
         }
     }
@@ -109,7 +112,7 @@ public class PedidoServlet extends HttpServlet {
 
     private void actualizar(HttpServletRequest request, List<DetallePedido> seleccion) {
         int cantidad = leerCantidad(request);
-        String codigo = request.getParameter("codigo");
+        String codigo = request.getParameter(CODIGO);
         DetallePedido detalle = buscarEnSeleccion(seleccion, codigo).orElseThrow(
                 () -> new IllegalArgumentException("El producto no está en su selección."));
         Producto producto = buscarDisponible(codigo).orElseThrow(
@@ -164,15 +167,15 @@ public class PedidoServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession sesion = request.getSession();
         List<DetallePedido> seleccion = obtenerSeleccion(sesion);
-        Object confirmado = sesion.getAttribute("pedidoConfirmado");
+        Object confirmado = sesion.getAttribute(PEDIDO_CONFIRMADO);
         if (confirmado != null) {
-            request.setAttribute("pedidoConfirmado", confirmado);
-            sesion.removeAttribute("pedidoConfirmado");
+            request.setAttribute(PEDIDO_CONFIRMADO, confirmado);
+            sesion.removeAttribute(PEDIDO_CONFIRMADO);
         }
         try {
             request.setAttribute("productos", productoService.consultarDisponibles());
         } catch (IllegalStateException e) {
-            request.setAttribute("error", e.getMessage());
+            request.setAttribute(ERROR, e.getMessage());
         }
         request.setAttribute("total", gestionPedidoService.calcularTotal(seleccion));
         request.getRequestDispatcher("/WEB-INF/vistas/mi-pedido.jsp").forward(request, response);
@@ -181,19 +184,19 @@ public class PedidoServlet extends HttpServlet {
     private void mostrarConsulta(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String codigoCliente = codigoCliente(request.getSession());
-        String codigoRetiro = request.getParameter("codigo");
+        String codigoRetiro = request.getParameter(CODIGO);
         try {
             if (codigoRetiro != null) {
                 Optional<Pedido> pedido = consultaPedidoService.consultarPedidoDelCliente(codigoCliente, codigoRetiro);
                 if (pedido.isPresent()) {
                     request.setAttribute("pedido", pedido.get());
                 } else {
-                    request.setAttribute("error", "No se encontró el pedido.");
+                    request.setAttribute(ERROR, "No se encontró el pedido.");
                 }
             }
             request.setAttribute("misPedidos", consultaPedidoService.listarPedidosDelCliente(codigoCliente));
         } catch (IllegalStateException e) {
-            request.setAttribute("error", e.getMessage());
+            request.setAttribute(ERROR, e.getMessage());
         }
         request.getRequestDispatcher("/WEB-INF/vistas/consultar-pedido.jsp").forward(request, response);
     }
@@ -202,8 +205,9 @@ public class PedidoServlet extends HttpServlet {
     private List<DetallePedido> obtenerSeleccion(HttpSession sesion) {
         List<DetallePedido> seleccion = (List<DetallePedido>) sesion.getAttribute(SELECCION);
         if (seleccion == null) {
-            seleccion = new ArrayList<>();
-            sesion.setAttribute(SELECCION, seleccion);
+            ArrayList<DetallePedido> nueva = new ArrayList<>();
+            sesion.setAttribute(SELECCION, nueva);
+            seleccion = nueva;
         }
         return seleccion;
     }

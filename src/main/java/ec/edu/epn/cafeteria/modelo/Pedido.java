@@ -1,5 +1,6 @@
 package ec.edu.epn.cafeteria.modelo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,7 +10,9 @@ import java.util.List;
  * Pedido confirmado por un cliente universitario.
  * Contiene uno o varios detalles y un código de retiro único (RN-NEG-05).
  */
-public class Pedido {
+public class Pedido implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private long id;
     private String codigoRetiro;
@@ -23,6 +26,7 @@ public class Pedido {
      * Crea un pedido vacío, sin detalles; sus datos se asignan con los métodos set.
      */
     public Pedido() {
+        // Constructor vacío: los detalles se agregan después.
     }
 
     /**

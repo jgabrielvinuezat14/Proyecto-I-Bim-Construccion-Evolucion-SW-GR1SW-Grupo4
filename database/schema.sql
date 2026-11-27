@@ -31,22 +31,28 @@ GO
    con su correo institucional y una contraseña, que se guarda solo como
    hash BCrypt (nunca en texto plano).
    --------------------------------------------------------------------- */
+/* Secuencia que genera el código del cliente: C001, C002, ... */
+IF NOT EXISTS (SELECT 1 FROM sys.sequences WHERE name = N'seq_cliente')
+    CREATE SEQUENCE dbo.seq_cliente AS INT START WITH 1 INCREMENT BY 1;
+GO
+
 IF OBJECT_ID(N'dbo.Cliente', N'U') IS NULL
 CREATE TABLE dbo.Cliente (
-    codigo_cliente  VARCHAR(10)        NOT NULL,
+    codigo_cliente  VARCHAR(10)        NOT NULL
+        CONSTRAINT DF_Cliente_codigo
+        DEFAULT ('C' + RIGHT('000' + CAST(NEXT VALUE FOR dbo.seq_cliente AS VARCHAR(10)), 3)),
     nombre          NVARCHAR(60)       NOT NULL,
     apellido        NVARCHAR(60)       NOT NULL,
     cedula          CHAR(10)           NOT NULL,
     celular         VARCHAR(10)        NOT NULL,
-    correo          NVARCHAR(120)      NOT NULL,
+    correo_institucional NVARCHAR(120) NOT NULL,
     contrasena_hash VARCHAR(100)       NOT NULL,
-    fecha_registro  DATETIME2(0)       NOT NULL CONSTRAINT DF_Cliente_fecha DEFAULT SYSDATETIME(),
     CONSTRAINT PK_Cliente PRIMARY KEY (codigo_cliente),
     CONSTRAINT UQ_Cliente_cedula UNIQUE (cedula),
-    CONSTRAINT UQ_Cliente_correo UNIQUE (correo),
+    CONSTRAINT UQ_Cliente_correo UNIQUE (correo_institucional),
     CONSTRAINT CK_Cliente_cedula CHECK (cedula NOT LIKE '%[^0-9]%' AND LEN(cedula) = 10),
     CONSTRAINT CK_Cliente_celular CHECK (celular NOT LIKE '%[^0-9]%' AND LEN(celular) = 10),
-    CONSTRAINT CK_Cliente_correo CHECK (correo LIKE N'%_@_%._%')
+    CONSTRAINT CK_Cliente_correo CHECK (correo_institucional LIKE N'%_@_%._%')
 );
 GO
 
@@ -54,21 +60,21 @@ GO
    Producto
    Artículo del menú (alimento o bebida): código, nombre, precio y
    disponibilidad, según la especificación del cliente (sección 7).
-   unidades_disponibles es una AMPLIACIÓN DEL EQUIPO definida en el
+   cantidad_disponible es una AMPLIACIÓN DEL EQUIPO definida en el
    backlog (HU-01, HU-02, HU-04 y HU-06); no la pide el cliente y no
    equivale a inventario de ingredientes. Un producto se muestra al
-   cliente solo si disponible = 1 y unidades_disponibles > 0.
+   cliente solo si disponible = 1 y cantidad_disponible > 0.
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Producto', N'U') IS NULL
 CREATE TABLE dbo.Producto (
     codigo                VARCHAR(10)        NOT NULL,
     nombre                NVARCHAR(100)      NOT NULL,
     precio                DECIMAL(10,2)      NOT NULL,
-    unidades_disponibles  INT                NOT NULL CONSTRAINT DF_Producto_unidades DEFAULT 0,
+    cantidad_disponible   INT                NOT NULL CONSTRAINT DF_Producto_cantidad DEFAULT 0,
     disponible            BIT                NOT NULL CONSTRAINT DF_Producto_disponible DEFAULT 1,
     CONSTRAINT PK_Producto PRIMARY KEY (codigo),
     CONSTRAINT CK_Producto_precio CHECK (precio > 0),
-    CONSTRAINT CK_Producto_unidades CHECK (unidades_disponibles >= 0)
+    CONSTRAINT CK_Producto_cantidad CHECK (cantidad_disponible >= 0)
 );
 GO
 
@@ -79,7 +85,7 @@ GO
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Pedido', N'U') IS NULL
 CREATE TABLE dbo.Pedido (
-    id_pedido       INT IDENTITY(1,1)  NOT NULL,
+    id_pedido       BIGINT IDENTITY(1,1) NOT NULL,
     codigo_retiro   CHAR(6)            NOT NULL,
     codigo_cliente  VARCHAR(10)        NOT NULL,
     fecha_registro  DATETIME2(0)       NOT NULL CONSTRAINT DF_Pedido_fecha DEFAULT SYSDATETIME(),
@@ -110,15 +116,16 @@ GO
    DetallePedido
    Producto incluido en un pedido. precio_unitario guarda el precio
    vigente al confirmar y no cambia si luego cambia el menú (RN-NEG-04).
+   El subtotal no se guarda: lo calcula la aplicación con
+   DetallePedido.calcularSubtotal() (cantidad × precio_unitario).
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.DetallePedido', N'U') IS NULL
 CREATE TABLE dbo.DetallePedido (
-    id_detalle       INT IDENTITY(1,1)  NOT NULL,
-    id_pedido        INT                NOT NULL,
+    id_detalle       BIGINT IDENTITY(1,1) NOT NULL,
+    id_pedido        BIGINT             NOT NULL,
     codigo_producto  VARCHAR(10)        NOT NULL,
     cantidad         INT                NOT NULL,
     precio_unitario  DECIMAL(10,2)      NOT NULL,
-    subtotal         AS (CAST(cantidad * precio_unitario AS DECIMAL(12,2))) PERSISTED,
     CONSTRAINT PK_DetallePedido PRIMARY KEY (id_detalle),
     CONSTRAINT FK_Detalle_Pedido FOREIGN KEY (id_pedido) REFERENCES dbo.Pedido (id_pedido),
     CONSTRAINT FK_Detalle_Producto FOREIGN KEY (codigo_producto) REFERENCES dbo.Producto (codigo),

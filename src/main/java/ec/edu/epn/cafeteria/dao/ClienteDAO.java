@@ -14,6 +14,7 @@ import java.util.Optional;
  */
 public class ClienteDAO {
 
+    private static final String SQL_SELECT = "SELECT ";
     private static final String COLUMNAS =
             "codigo_cliente, nombre, apellido, cedula, celular, correo_institucional, contrasena_hash";
 
@@ -41,7 +42,7 @@ public class ClienteDAO {
      * @throws SQLException si falla la consulta
      */
     public Optional<Cliente> buscarPorCorreo(String correoInstitucional) throws SQLException {
-        String sql = "SELECT " + COLUMNAS + " FROM dbo.Cliente WHERE correo_institucional = ?";
+        String sql = SQL_SELECT + COLUMNAS + " FROM dbo.Cliente WHERE correo_institucional = ?";
         return buscarUnico(sql, correoInstitucional);
     }
 
@@ -53,7 +54,7 @@ public class ClienteDAO {
      * @throws SQLException si falla la consulta
      */
     public Optional<Cliente> buscarPorCedula(String cedula) throws SQLException {
-        String sql = "SELECT " + COLUMNAS + " FROM dbo.Cliente WHERE cedula = ?";
+        String sql = SQL_SELECT + COLUMNAS + " FROM dbo.Cliente WHERE cedula = ?";
         return buscarUnico(sql, cedula);
     }
 
@@ -65,7 +66,7 @@ public class ClienteDAO {
      * @throws SQLException si falla la consulta
      */
     public Optional<Cliente> buscarPorCodigo(String codigo) throws SQLException {
-        String sql = "SELECT " + COLUMNAS + " FROM dbo.Cliente WHERE codigo_cliente = ?";
+        String sql = SQL_SELECT + COLUMNAS + " FROM dbo.Cliente WHERE codigo_cliente = ?";
         return buscarUnico(sql, codigo);
     }
 

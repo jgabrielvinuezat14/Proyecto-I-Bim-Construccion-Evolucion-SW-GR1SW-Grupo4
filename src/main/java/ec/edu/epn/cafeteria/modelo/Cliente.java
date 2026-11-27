@@ -1,10 +1,14 @@
 package ec.edu.epn.cafeteria.modelo;
 
+import java.io.Serializable;
+
 /**
  * Cliente universitario (estudiante o docente) que realiza pedidos.
  * La contraseña nunca se guarda en texto plano: solo su hash BCrypt (RNF-04).
  */
-public class Cliente {
+public class Cliente implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String codigo;
     private String nombre;
@@ -18,6 +22,7 @@ public class Cliente {
      * Crea un cliente vacío; sus datos se asignan con los métodos set.
      */
     public Cliente() {
+        // Constructor vacío requerido por los DAO y las vistas JSP.
     }
 
     /**

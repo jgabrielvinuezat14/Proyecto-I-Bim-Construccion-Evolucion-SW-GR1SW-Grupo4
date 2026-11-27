@@ -1,12 +1,15 @@
 package ec.edu.epn.cafeteria.modelo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * Producto del menú de la cafetería (alimento o bebida).
  * Se muestra al cliente solo si está disponible y tiene al menos una unidad.
  */
-public class Producto {
+public class Producto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String codigo;
     private String nombre;

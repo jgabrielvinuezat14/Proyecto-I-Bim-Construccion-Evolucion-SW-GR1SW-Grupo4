@@ -1,5 +1,6 @@
 package ec.edu.epn.cafeteria.modelo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -7,7 +8,9 @@ import java.math.RoundingMode;
  * Producto incluido en un pedido con su cantidad y el precio unitario aplicado.
  * El precio unitario se conserva aunque después cambie el precio del menú (RN-NEG-04).
  */
-public class DetallePedido {
+public class DetallePedido implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private long id;
     private int cantidad;

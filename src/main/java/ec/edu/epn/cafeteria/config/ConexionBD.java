@@ -8,6 +8,14 @@ import java.sql.SQLException;
  * Proporciona las conexiones JDBC a SQL Server que usan las clases de acceso a datos.
  * Los datos de conexión se leen de las variables DB_URL, DB_USER y DB_PASSWORD
  * (variables de entorno o propiedades del sistema), nunca del código fuente.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>RNF-01 Persistencia: todos los datos se guardan en SQL Server.</li>
+ * <li>RNF-04 Seguridad básica: las credenciales no se escriben en el código.</li>
+ * <li>ADR-02: SQL Server ejecutado en Docker.</li>
+ * <li>ADR-03: acceso a datos con DAO y JDBC.</li>
+ * <li>ADR-04: entrega la conexión que comparte la transacción de confirmación.</li>
+ * </ul>
  */
 public class ConexionBD {
 
@@ -16,6 +24,7 @@ public class ConexionBD {
     /**
      * Abre una conexión nueva a la base CafeteriaDB.
      * Quien la recibe debe cerrarla (por ejemplo, con try-with-resources).
+     * <p>Trazabilidad: RNF-01, ADR-03.</p>
      *
      * @return conexión abierta con autocommit activado
      * @throws SQLException          si SQL Server no responde o las credenciales son incorrectas

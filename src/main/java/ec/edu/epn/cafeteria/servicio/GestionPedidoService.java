@@ -19,8 +19,17 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Cálculo y confirmación de pedidos, avance de estado y registro de la entrega
- * (HU-03, HU-04 y HU-08).
+ * Cálculo y confirmación de pedidos, avance de estado y registro de la entrega.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-03 Total del pedido: {@link #calcularTotal(java.util.List)}.</li>
+ * <li>HU-04 Confirmar pedido: {@link #confirmarPedido(String, java.util.List)}.</li>
+ * <li>HU-08 Avance y entrega: {@link #avanzarEstado(long)} y {@link #registrarEntrega(String)}.</li>
+ * <li>RN-NEG-01 a RN-NEG-07, RN-03 y RN-04.</li>
+ * <li>RNF-01, RNF-02 y RNF-03 (control de concurrencia al descontar unidades y cambiar estado).</li>
+ * <li>CA-04.4: se usa el precio vigente al confirmar.</li>
+ * <li>ADR-04: la confirmación se hace en una sola transacción.</li>
+ * </ul>
  */
 public class GestionPedidoService {
 
@@ -58,6 +67,7 @@ public class GestionPedidoService {
 
     /**
      * Calcula el total de una selección (RN-NEG-03).
+     * <p>Trazabilidad: HU-03, RN-NEG-03, RNF-02.</p>
      *
      * @param detalles productos seleccionados con su cantidad y precio unitario
      * @return suma de los subtotales; cero si la selección está vacía
@@ -75,6 +85,7 @@ public class GestionPedidoService {
      * Antes de registrar comprueba disponibilidad y precio vigente; si un precio cambió
      * desde la revisión, actualiza la selección y no confirma (CA-04.4). El descuento de
      * unidades y el registro del pedido se hacen en una sola transacción (RNF-03, ADR-04).
+     * <p>Trazabilidad: HU-04, RN-NEG-01 a RN-NEG-05, CA-04.4, RNF-03, ADR-04.</p>
      *
      * @param codigoCliente código del cliente que confirma
      * @param detalles      productos seleccionados
@@ -106,6 +117,7 @@ public class GestionPedidoService {
      * Avanza un pedido al siguiente estado: PENDIENTE a EN_PREPARACION o
      * EN_PREPARACION a LISTO_PARA_RETIRAR (HU-08). La entrega se registra con
      * {@link #registrarEntrega(String)}.
+     * <p>Trazabilidad: HU-08, RN-NEG-06, RNF-03.</p>
      *
      * @param idPedido identificador del pedido
      * @throws IllegalStateException si el pedido no puede avanzar desde su estado actual
@@ -127,6 +139,7 @@ public class GestionPedidoService {
     /**
      * Registra la entrega del pedido que corresponde al código presentado por el cliente.
      * Solo se entrega un pedido LISTO_PARA_RETIRAR (RN-NEG-07).
+     * <p>Trazabilidad: HU-08, RN-04, RN-NEG-07.</p>
      *
      * @param codigoRetiro código que presenta el cliente
      * @throws IllegalStateException si el código no corresponde a un pedido listo para retirar

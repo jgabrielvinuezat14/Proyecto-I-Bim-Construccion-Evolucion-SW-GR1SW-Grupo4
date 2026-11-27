@@ -16,8 +16,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Atiende la gestión de pedidos del personal: consulta y filtro por estado (HU-07),
- * avance de estado y registro de la entrega con el código de retiro (HU-08).
+ * Atiende la gestión de pedidos del personal: consulta y filtro por estado,
+ * avance de estado y registro de la entrega con el código de retiro.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-07 Consultar pedidos por estado.</li>
+ * <li>HU-08 Avanzar estado y registrar la entrega.</li>
+ * <li>RN-03, RN-04, RN-NEG-06 y RN-NEG-07.</li>
+ * <li>HU-10: ruta protegida por {@link FiltroAcceso}.</li>
+ * </ul>
  */
 @WebServlet("/admin/pedidos")
 public class GestionPedidoServlet extends HttpServlet {

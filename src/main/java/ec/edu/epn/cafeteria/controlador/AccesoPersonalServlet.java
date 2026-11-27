@@ -11,7 +11,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Atiende el inicio y cierre de sesión del personal de cafetería (HU-10).
+ * Atiende el inicio y cierre de sesión del personal de cafetería.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-10 Acceso del personal.</li>
+ * <li>RNF-04 Seguridad básica: crea y elimina la sesión del personal.</li>
+ * <li>ADR-01: controlador de la capa web (MVC).</li>
+ * </ul>
  */
 @WebServlet(urlPatterns = {"/personal/acceso", "/personal/salir"})
 public class AccesoPersonalServlet extends HttpServlet {

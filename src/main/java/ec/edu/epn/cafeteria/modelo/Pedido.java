@@ -8,7 +8,18 @@ import java.util.List;
 
 /**
  * Pedido confirmado por un cliente universitario.
- * Contiene uno o varios detalles y un código de retiro único (RN-NEG-05).
+ * Contiene uno o varios detalles y un código de retiro único.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-03 Total del pedido: {@link #calcularTotal()}.</li>
+ * <li>HU-04 Confirmar pedido: se registra con fecha, total, estado PENDIENTE y código de retiro.</li>
+ * <li>HU-05, HU-07 y HU-08: consulta, gestión y entrega por parte del cliente y del personal.</li>
+ * <li>RN-NEG-01: un pedido tiene al menos un producto.</li>
+ * <li>RN-NEG-03 y RNF-02: el total es la suma de los subtotales con dos decimales.</li>
+ * <li>RN-NEG-05: el código de retiro de 6 caracteres es único.</li>
+ * <li>RN-NEG-06: el estado sigue el ciclo definido en {@link EstadoPedido}.</li>
+ * <li>Tabla dbo.Pedido del modelo de datos.</li>
+ * </ul>
  */
 public class Pedido implements Serializable {
 
@@ -31,6 +42,7 @@ public class Pedido implements Serializable {
 
     /**
      * Calcula el total del pedido como la suma de los subtotales de sus detalles (RN-NEG-03).
+     * <p>Trazabilidad: HU-03, RN-NEG-03, RNF-02.</p>
      *
      * @return total con dos decimales; cero si el pedido no tiene detalles
      */

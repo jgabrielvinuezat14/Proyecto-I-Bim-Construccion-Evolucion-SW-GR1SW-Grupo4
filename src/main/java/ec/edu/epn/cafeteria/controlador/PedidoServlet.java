@@ -20,9 +20,17 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Atiende las solicitudes del cliente sobre su pedido: selección de productos (HU-02),
- * revisión del total (HU-03), confirmación (HU-04) y consulta del estado (HU-05).
+ * Atiende las solicitudes del cliente sobre su pedido.
  * La selección se guarda en la sesión y no en la base de datos hasta confirmar.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-02 Agregar y quitar productos.</li>
+ * <li>HU-03 Revisar el total.</li>
+ * <li>HU-04 Confirmar el pedido y mostrar el código de retiro.</li>
+ * <li>HU-05 Consultar el estado de sus pedidos.</li>
+ * <li>HU-09: usa el cliente de la sesión.</li>
+ * <li>RN-NEG-01 y RN-NEG-02: validaciones de la selección.</li>
+ * </ul>
  */
 @WebServlet(urlPatterns = {"/mi-pedido", "/consultar-pedido"})
 public class PedidoServlet extends HttpServlet {

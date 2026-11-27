@@ -11,8 +11,16 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
- * Registro e inicio de sesión de clientes universitarios (HU-09, RNF-01 y RNF-04).
+ * Registro e inicio de sesión de clientes universitarios.
  * Las contraseñas se almacenan únicamente como hash BCrypt.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-09 Registro e inicio de sesión del cliente.</li>
+ * <li>RNF-01: el cliente se guarda en la base de datos.</li>
+ * <li>RNF-04: validación de datos, cédula y correo únicos, contraseña con BCrypt.</li>
+ * <li>ADR-05: el código de cliente lo asigna una secuencia de la base de datos.</li>
+ * <li>ADR-01: lógica de negocio en la capa de servicio.</li>
+ * </ul>
  */
 public class ClienteService {
 
@@ -51,6 +59,7 @@ public class ClienteService {
     /**
      * Valida los datos del cliente, verifica que no existan duplicados de correo o cédula,
      * genera el hash BCrypt de la contraseña y registra al cliente (HU-09, RNF-04).
+     * <p>Trazabilidad: HU-09, RNF-04, ADR-05.</p>
      *
      * @param datos      datos personales del cliente
      * @param contrasena contraseña en texto plano ingresada en el formulario
@@ -73,6 +82,7 @@ public class ClienteService {
 
     /**
      * Registra un cliente nuevo a partir de sus datos individuales (HU-09, RNF-04).
+     * <p>Trazabilidad: HU-09, RNF-04.</p>
      *
      * @param nombre              nombre del cliente
      * @param apellido            apellido del cliente
@@ -139,6 +149,7 @@ public class ClienteService {
     /**
      * Autentica a un cliente verificando su correo institucional y su contraseña contra
      * el hash BCrypt almacenado. Ante cualquier discrepancia devuelve un mensaje genérico (HU-09).
+     * <p>Trazabilidad: HU-09, RNF-04.</p>
      *
      * @param correoInstitucional correo institucional ingresado
      * @param contrasena          contraseña ingresada

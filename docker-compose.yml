@@ -1,0 +1,27 @@
+# SQL Server 2022 para el proyecto de la cafetería universitaria.
+# Los datos se guardan en el volumen "cafeteria_sqlserver_data", así que
+# se conservan aunque el contenedor se detenga o se vuelva a crear.
+#
+# Uso:
+#   1. Copiar .env.example como .env y poner una contraseña propia.
+#   2. docker compose up -d
+#   3. Ejecutar database/schema.sql y database/datos_iniciales.sql
+#      (ver database/README.md).
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: cafeteria-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - cafeteria_sqlserver_data:/var/opt/mssql
+      - ./database:/scripts:ro
+    restart: unless-stopped
+
+volumes:
+  cafeteria_sqlserver_data:

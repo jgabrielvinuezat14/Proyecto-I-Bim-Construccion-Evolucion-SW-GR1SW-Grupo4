@@ -56,6 +56,24 @@
             </tbody>
         </table>
         <p class="total">Total: $<fmt:formatNumber value="${pedidoDetalle.total}" pattern="0.00"/></p>
+        <c:if test="${pedidoDetalle.estado == 'PENDIENTE' or pedidoDetalle.estado == 'EN_PREPARACION'}">
+            <form method="post" action="${pageContext.request.contextPath}/admin/pedidos">
+                <input type="hidden" name="accion" value="avanzar">
+                <input type="hidden" name="id" value="${pedidoDetalle.id}">
+                <input type="hidden" name="codigo" value="${pedidoDetalle.codigoRetiro}">
+                <input type="hidden" name="estado" value="${estadoFiltro}">
+                <button type="submit">${pedidoDetalle.estado == 'PENDIENTE' ? 'Iniciar preparación' : 'Marcar como listo'}</button>
+            </form>
+        </c:if>
     </section>
 </c:if>
+
+<section class="tarjeta">
+    <h2>Entregar pedido</h2>
+    <form method="post" action="${pageContext.request.contextPath}/admin/pedidos" class="fila">
+        <input type="hidden" name="accion" value="entregar">
+        <label>Código de retiro <input type="text" name="codigoRetiro" maxlength="6"></label>
+        <button type="submit">Registrar entrega</button>
+    </form>
+</section>
 <%@ include file="pie.jspf" %>

@@ -1,0 +1,14 @@
+# Variables de entorno con contraseñas
+.env
+
+# Maven / IntelliJ
+target/
+.idea/
+*.iml
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Configuracion local de VS Code
+.vscode/

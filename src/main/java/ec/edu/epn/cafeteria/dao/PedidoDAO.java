@@ -18,6 +18,14 @@ import java.util.Optional;
 
 /**
  * Registro y consulta de pedidos (dbo.Pedido y dbo.DetallePedido) y actualización de su estado.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-04: guarda el pedido y sus detalles dentro de la transacción de confirmación (ADR-04).</li>
+ * <li>HU-05 y HU-07: consultas por código de retiro, por cliente y en orden de llegada (RN-03).</li>
+ * <li>HU-08: cambio de estado condicionado al estado anterior (RN-NEG-06, RNF-03).</li>
+ * <li>RN-NEG-05: código de retiro único.</li>
+ * <li>RNF-01 y ADR-03: persistencia con DAO y JDBC.</li>
+ * </ul>
  */
 public class PedidoDAO {
 
@@ -45,6 +53,7 @@ public class PedidoDAO {
     /**
      * Inserta el pedido y sus detalles con la conexión de la transacción de confirmación.
      * Asigna al objeto el identificador generado por la base de datos.
+     * <p>Trazabilidad: HU-04, ADR-04.</p>
      *
      * @param pedido   pedido con cliente, código de retiro, estado, total y detalles
      * @param conexion conexión de la transacción en curso; no se cierra aquí
@@ -82,6 +91,7 @@ public class PedidoDAO {
 
     /**
      * Busca un pedido por su código de retiro e incluye sus detalles.
+     * <p>Trazabilidad: HU-05, HU-08.</p>
      *
      * @param codigo código de retiro de 6 caracteres
      * @return el pedido con sus detalles, o vacío si no existe
@@ -104,6 +114,7 @@ public class PedidoDAO {
 
     /**
      * Lista los pedidos de un cliente, del más reciente al más antiguo (sin detalles).
+     * <p>Trazabilidad: HU-05.</p>
      *
      * @param codigoCliente código del cliente
      * @return pedidos del cliente
@@ -115,6 +126,7 @@ public class PedidoDAO {
 
     /**
      * Lista todos los pedidos en orden de llegada (sin detalles), para el personal (HU-07).
+     * <p>Trazabilidad: HU-07, RN-03.</p>
      *
      * @return todos los pedidos
      * @throws SQLException si falla la consulta
@@ -126,6 +138,7 @@ public class PedidoDAO {
     /**
      * Cambia el estado de un pedido solo si su estado actual es el esperado.
      * Así dos usuarios no pueden avanzar el mismo pedido dos veces.
+     * <p>Trazabilidad: HU-08, RN-NEG-06, RNF-03.</p>
      *
      * @param id       identificador del pedido
      * @param anterior estado que debe tener el pedido

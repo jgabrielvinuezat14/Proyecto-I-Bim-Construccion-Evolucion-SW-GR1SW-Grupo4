@@ -12,7 +12,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Atiende el registro, el inicio de sesión y el cierre de sesión del cliente universitario (HU-09).
+ * Atiende el registro, el inicio de sesión y el cierre de sesión del cliente universitario.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-09 Registro e inicio de sesión del cliente.</li>
+ * <li>RNF-04 Seguridad básica: el cliente autenticado se guarda en la sesión.</li>
+ * <li>ADR-01: controlador de la capa web (MVC).</li>
+ * </ul>
  */
 @WebServlet(urlPatterns = {"/login", "/registro", "/logout"})
 public class ClienteServlet extends HttpServlet {

@@ -6,7 +6,16 @@ import java.math.RoundingMode;
 
 /**
  * Producto incluido en un pedido con su cantidad y el precio unitario aplicado.
- * El precio unitario se conserva aunque después cambie el precio del menú (RN-NEG-04).
+ * El precio unitario se conserva aunque después cambie el precio del menú.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-02 Agregar productos al pedido.</li>
+ * <li>HU-03 Total: {@link #calcularSubtotal()}.</li>
+ * <li>HU-04 / CA-04.4: se usa el precio vigente al confirmar.</li>
+ * <li>RN-NEG-03 y RNF-02: subtotal con dos decimales (redondeo HALF_UP).</li>
+ * <li>RN-NEG-04: el precio registrado no cambia si luego se modifica el menú.</li>
+ * <li>Tabla dbo.DetallePedido del modelo de datos.</li>
+ * </ul>
  */
 public class DetallePedido implements Serializable {
 
@@ -23,6 +32,7 @@ public class DetallePedido implements Serializable {
 
     /**
      * Crea un detalle con el precio vigente del producto.
+     * <p>Trazabilidad: HU-02, CA-04.4.</p>
      *
      * @param producto producto solicitado
      * @param cantidad cantidad solicitada
@@ -35,6 +45,7 @@ public class DetallePedido implements Serializable {
 
     /**
      * Calcula el importe de este detalle.
+     * <p>Trazabilidad: HU-03, RN-NEG-03, RNF-02.</p>
      *
      * @return cantidad multiplicada por el precio unitario, con dos decimales
      */

@@ -10,7 +10,15 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 /**
- * Operaciones de consulta y registro de clientes universitarios en la tabla dbo.Cliente (HU-09).
+ * Operaciones de consulta y registro de clientes universitarios en la tabla dbo.Cliente.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-09 Registro e inicio de sesión.</li>
+ * <li>RNF-01 Persistencia en SQL Server.</li>
+ * <li>RNF-04: consultas parametrizadas; cédula y correo únicos.</li>
+ * <li>ADR-03: patrón DAO con JDBC.</li>
+ * <li>ADR-05: el código lo genera la secuencia de la base de datos.</li>
+ * </ul>
  */
 public class ClienteDAO {
 
@@ -36,6 +44,7 @@ public class ClienteDAO {
 
     /**
      * Busca un cliente por su correo institucional.
+     * <p>Trazabilidad: HU-09.</p>
      *
      * @param correoInstitucional correo institucional del cliente
      * @return el cliente encontrado, o vacío si no existe
@@ -48,6 +57,7 @@ public class ClienteDAO {
 
     /**
      * Busca un cliente por su número de cédula.
+     * <p>Trazabilidad: HU-09, RNF-04.</p>
      *
      * @param cedula cédula de 10 dígitos
      * @return el cliente encontrado, o vacío si no existe
@@ -60,6 +70,7 @@ public class ClienteDAO {
 
     /**
      * Busca un cliente por su código único.
+     * <p>Trazabilidad: HU-09.</p>
      *
      * @param codigo código del cliente, por ejemplo «C001»
      * @return el cliente encontrado, o vacío si no existe
@@ -73,6 +84,7 @@ public class ClienteDAO {
     /**
      * Registra un cliente nuevo en la base de datos. Si el cliente no trae código asignado,
      * SQL Server lo genera mediante la secuencia {@code dbo.seq_cliente} y se asigna al objeto.
+     * <p>Trazabilidad: HU-09, ADR-05.</p>
      *
      * @param cliente cliente con sus datos y hash BCrypt de contraseña
      * @return el mismo cliente con su código asignado

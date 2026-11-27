@@ -6,7 +6,13 @@ import java.util.function.UnaryOperator;
 
 /**
  * Autenticación del personal de cafetería mediante código de acceso y contraseña
- * configurados en variables de entorno (HU-10, RNF-04).
+ * configurados en variables de entorno.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-10 Acceso del personal: protege HU-06, HU-07 y HU-08.</li>
+ * <li>RNF-04 Seguridad básica: credenciales fuera del código fuente.</li>
+ * <li>ADR-01: lógica en la capa de servicio del monolito por capas.</li>
+ * </ul>
  */
 public class AccesoPersonalService {
 
@@ -43,6 +49,7 @@ public class AccesoPersonalService {
     /**
      * Verifica el código de acceso y la contraseña ingresados por el personal contra
      * los valores configurados en el entorno, sin exponer cuál de los dos falló (HU-10, RNF-04).
+     * <p>Trazabilidad: HU-10, RNF-04.</p>
      *
      * @param codigoAcceso código de acceso ingresado
      * @param contrasena   contraseña ingresada

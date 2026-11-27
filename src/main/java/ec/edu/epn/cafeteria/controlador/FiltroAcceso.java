@@ -13,11 +13,17 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Filtro de control de acceso en el servidor (HU-09 y HU-10).
+ * Filtro de control de acceso en el servidor.
  * Protege las rutas administrativas ({@code /admin/*}) exigiendo sesión activa de personal
  * e impidiendo el acceso a usuarios no autenticados o con sesión de cliente, y protege
  * las rutas de pedido del cliente ({@code /mi-pedido}, {@code /consultar-pedido}) exigiendo
  * sesión activa de cliente.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-09: rutas del cliente solo con sesión de cliente.</li>
+ * <li>HU-10: protege HU-06, HU-07 y HU-08 con sesión de personal.</li>
+ * <li>RNF-04 Seguridad básica: el control se hace en el servidor.</li>
+ * </ul>
  */
 @WebFilter(urlPatterns = {"/admin/*", "/mi-pedido", "/consultar-pedido"})
 public class FiltroAcceso implements Filter {

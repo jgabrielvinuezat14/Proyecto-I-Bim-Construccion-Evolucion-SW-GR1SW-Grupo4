@@ -12,8 +12,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
- * Atiende la consulta del menú del cliente (HU-01) y la administración del menú
- * por parte del personal (HU-06).
+ * Atiende la consulta del menú del cliente y la administración del menú
+ * por parte del personal.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-01 Consultar menú ({@code /menu}).</li>
+ * <li>HU-06 Administrar menú ({@code /admin/productos}).</li>
+ * <li>HU-10: la ruta administrativa está protegida por {@link FiltroAcceso}.</li>
+ * <li>RN-NEG-02 y RN-NEG-03.</li>
+ * </ul>
  */
 @WebServlet(urlPatterns = {"/menu", "/admin/productos"})
 public class ProductoServlet extends HttpServlet {

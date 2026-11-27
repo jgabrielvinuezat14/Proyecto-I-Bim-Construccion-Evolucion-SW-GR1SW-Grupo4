@@ -9,7 +9,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Consulta y administración de los productos del menú (HU-01 y HU-06).
+ * Consulta y administración de los productos del menú.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-01 Consultar menú: {@link #consultarDisponibles()}.</li>
+ * <li>HU-06 Administrar menú: registrar, actualizar y cambiar disponibilidad.</li>
+ * <li>RN-02 y RN-NEG-02: solo se ofrecen productos disponibles con unidades.</li>
+ * <li>RN-NEG-03 y RNF-02: precios mayores que cero con dos decimales.</li>
+ * <li>RN-NEG-04: cambiar el precio no altera pedidos ya confirmados.</li>
+ * <li>RNF-01 y RNF-03.</li>
+ * </ul>
  */
 public class ProductoService {
 
@@ -36,6 +45,7 @@ public class ProductoService {
 
     /**
      * Consulta el menú que ve el cliente: productos disponibles con al menos una unidad (HU-01).
+     * <p>Trazabilidad: HU-01, RN-NEG-02.</p>
      *
      * @return productos disponibles
      */
@@ -49,6 +59,7 @@ public class ProductoService {
 
     /**
      * Consulta todos los productos para la administración del menú (HU-06).
+     * <p>Trazabilidad: HU-06.</p>
      *
      * @return todos los productos
      */
@@ -62,6 +73,7 @@ public class ProductoService {
 
     /**
      * Registra un producto nuevo después de validar sus datos (CA-06.1 y CA-06.3).
+     * <p>Trazabilidad: HU-06, RN-NEG-03, RNF-01.</p>
      *
      * @param producto producto a registrar
      * @throws IllegalArgumentException si algún dato es inválido o el código ya existe
@@ -81,6 +93,7 @@ public class ProductoService {
     /**
      * Actualiza precio, unidades y disponibilidad de un producto existente (CA-06.2).
      * Los pedidos ya confirmados conservan su precio (RN-NEG-04).
+     * <p>Trazabilidad: HU-06, RN-NEG-04.</p>
      *
      * @param producto producto con los datos nuevos
      * @throws IllegalArgumentException si algún dato es inválido o el producto no existe
@@ -99,6 +112,7 @@ public class ProductoService {
 
     /**
      * Habilita o deshabilita un producto sin cambiar sus demás datos.
+     * <p>Trazabilidad: HU-06, RN-NEG-02.</p>
      *
      * @param codigo     código del producto
      * @param disponible nuevo estado de disponibilidad

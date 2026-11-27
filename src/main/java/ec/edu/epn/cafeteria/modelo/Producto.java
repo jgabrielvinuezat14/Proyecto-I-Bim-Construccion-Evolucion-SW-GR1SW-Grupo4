@@ -6,6 +6,15 @@ import java.math.BigDecimal;
 /**
  * Producto del menú de la cafetería (alimento o bebida).
  * Se muestra al cliente solo si está disponible y tiene al menos una unidad.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-01 Consultar menú: el cliente ve solo productos disponibles con unidades.</li>
+ * <li>HU-02 Agregar productos: la cantidad pedida no puede superar {@code cantidadDisponible}.</li>
+ * <li>HU-06 Administrar menú: el personal registra, edita y cambia la disponibilidad.</li>
+ * <li>RN-02 y RN-NEG-02: solo se ofrecen productos disponibles y con existencias.</li>
+ * <li>RN-NEG-03 y RNF-02: el precio se maneja con {@link java.math.BigDecimal} y dos decimales.</li>
+ * <li>Tabla dbo.Producto del modelo de datos.</li>
+ * </ul>
  */
 public class Producto implements Serializable {
 

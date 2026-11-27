@@ -8,7 +8,14 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Consultas de pedidos para el cliente (HU-05) y para el personal (HU-07).
+ * Consultas de pedidos para el cliente y para el personal.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-05 Consultar estado del pedido: el cliente solo ve sus propios pedidos.</li>
+ * <li>HU-07 Consultar pedidos: el personal ve los pedidos en orden de llegada.</li>
+ * <li>RN-03: los pedidos se atienden en orden de llegada.</li>
+ * <li>RN-NEG-06: se muestra el estado actual de cada pedido.</li>
+ * </ul>
  */
 public class ConsultaPedidoService {
 
@@ -31,6 +38,7 @@ public class ConsultaPedidoService {
     /**
      * Consulta un pedido por su código de retiro. Si se indica el código del cliente,
      * solo devuelve el pedido cuando le pertenece, sin revelar pedidos de otros clientes.
+     * <p>Trazabilidad: HU-05.</p>
      *
      * @param codigoCliente código del cliente con sesión, o {@code null} para no filtrar
      * @param codigoRetiro  código de retiro ingresado (no distingue mayúsculas)
@@ -50,6 +58,7 @@ public class ConsultaPedidoService {
 
     /**
      * Lista los pedidos de un cliente, del más reciente al más antiguo.
+     * <p>Trazabilidad: HU-05.</p>
      *
      * @param codigoCliente código del cliente
      * @return pedidos del cliente
@@ -64,6 +73,7 @@ public class ConsultaPedidoService {
 
     /**
      * Lista todos los pedidos recibidos para que el personal los filtre por estado (HU-07).
+     * <p>Trazabilidad: HU-07, RN-03.</p>
      *
      * @return pedidos en orden de llegada
      */

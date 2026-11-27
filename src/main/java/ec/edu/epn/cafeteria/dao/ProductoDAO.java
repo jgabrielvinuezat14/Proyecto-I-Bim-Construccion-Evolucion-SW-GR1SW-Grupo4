@@ -13,6 +13,13 @@ import java.util.Optional;
 
 /**
  * Operaciones de consulta y actualización de productos en la tabla dbo.Producto.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-01: lista los productos disponibles con unidades (RN-NEG-02).</li>
+ * <li>HU-04: descuenta unidades dentro de la transacción de confirmación (ADR-04, RNF-03).</li>
+ * <li>HU-06: registra y actualiza productos.</li>
+ * <li>RNF-01 y ADR-03: persistencia con DAO y JDBC.</li>
+ * </ul>
  */
 public class ProductoDAO {
 
@@ -37,6 +44,7 @@ public class ProductoDAO {
 
     /**
      * Lista los productos que el cliente puede ver: disponibles y con al menos una unidad (HU-01).
+     * <p>Trazabilidad: HU-01, RN-NEG-02.</p>
      *
      * @return productos ordenados por nombre
      * @throws SQLException si falla la consulta
@@ -48,6 +56,7 @@ public class ProductoDAO {
 
     /**
      * Lista todos los productos, incluidos los no disponibles (HU-06).
+     * <p>Trazabilidad: HU-06.</p>
      *
      * @return productos ordenados por código
      * @throws SQLException si falla la consulta
@@ -58,6 +67,7 @@ public class ProductoDAO {
 
     /**
      * Busca un producto por su código.
+     * <p>Trazabilidad: HU-02, HU-06.</p>
      *
      * @param codigo código del producto, por ejemplo «P001»
      * @return el producto, o vacío si no existe
@@ -76,6 +86,7 @@ public class ProductoDAO {
 
     /**
      * Registra un producto nuevo.
+     * <p>Trazabilidad: HU-06, RNF-01.</p>
      *
      * @param producto producto con todos sus datos
      * @throws SQLException si el código ya existe o falla la inserción
@@ -95,6 +106,7 @@ public class ProductoDAO {
 
     /**
      * Actualiza nombre, precio, unidades y disponibilidad de un producto existente.
+     * <p>Trazabilidad: HU-06.</p>
      *
      * @param producto producto con los datos nuevos
      * @throws SQLException si falla la actualización
@@ -116,6 +128,7 @@ public class ProductoDAO {
     /**
      * Descuenta unidades solo si el producto sigue disponible y tiene unidades suficientes.
      * Se ejecuta dentro de la transacción de confirmación del pedido (RNF-03, ADR-04).
+     * <p>Trazabilidad: HU-04, RNF-03, ADR-04.</p>
      *
      * @param codigo   código del producto
      * @param cantidad unidades a descontar

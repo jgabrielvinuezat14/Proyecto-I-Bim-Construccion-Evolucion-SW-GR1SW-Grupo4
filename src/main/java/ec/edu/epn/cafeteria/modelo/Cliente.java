@@ -4,7 +4,15 @@ import java.io.Serializable;
 
 /**
  * Cliente universitario (estudiante o docente) que realiza pedidos.
- * La contraseña nunca se guarda en texto plano: solo su hash BCrypt (RNF-04).
+ * La contraseña nunca se guarda en texto plano: solo su hash BCrypt.
+ * <p><b>Trazabilidad</b></p>
+ * <ul>
+ * <li>HU-09 Registro e inicio de sesión del cliente.</li>
+ * <li>HU-04, HU-05 y HU-07: cada pedido queda asociado a su cliente.</li>
+ * <li>RNF-01: los datos persisten en la tabla dbo.Cliente.</li>
+ * <li>RNF-04: seguridad básica, contraseña almacenada como hash BCrypt.</li>
+ * <li>ADR-05: el código del cliente se genera con una secuencia de la base de datos.</li>
+ * </ul>
  */
 public class Cliente implements Serializable {
 

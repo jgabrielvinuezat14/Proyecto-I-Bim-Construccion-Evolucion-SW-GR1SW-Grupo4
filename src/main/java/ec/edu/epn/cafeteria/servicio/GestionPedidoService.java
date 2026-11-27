@@ -166,6 +166,13 @@ public class GestionPedidoService {
         }
     }
 
+    /**
+     * Verifica que el pedido tenga al menos un producto y que cada cantidad sea mayor que cero.
+     * <p>Trazabilidad: HU-04, RN-NEG-01.</p>
+     *
+     * @param detalles productos elegidos
+     * @throws IllegalArgumentException si la selección está vacía o tiene cantidades no válidas
+     */
     private void validarSeleccion(List<DetallePedido> detalles) {
         if (detalles == null || detalles.isEmpty()) {
             throw new IllegalArgumentException(MSG_VACIO);
@@ -177,6 +184,15 @@ public class GestionPedidoService {
         }
     }
 
+    /**
+     * Comprueba que cada producto siga disponible, tenga unidades suficientes y mantenga su precio.
+     * Si un precio cambió, actualiza el detalle y pide al cliente volver a confirmar.
+     * <p>Trazabilidad: HU-04, RN-NEG-02, RN-NEG-04, CA-04.4.</p>
+     *
+     * @param detalles productos elegidos
+     * @throws IllegalStateException si un producto no está disponible, no tiene unidades o cambió de precio
+     * @throws SQLException si falla la consulta
+     */
     private void comprobarProductos(List<DetallePedido> detalles) throws SQLException {
         List<String> cambiados = new ArrayList<>();
         for (DetallePedido detalle : detalles) {
@@ -202,6 +218,14 @@ public class GestionPedidoService {
         }
     }
 
+    /**
+     * Descuenta las unidades y guarda el pedido en una sola transacción; si algo falla, deshace todo.
+     * <p>Trazabilidad: HU-04, RNF-01, RNF-03, ADR-04.</p>
+     *
+     * @param pedido pedido que se registra
+     * @throws IllegalStateException si otro pedido se llevó las unidades
+     * @throws SQLException si falla la base de datos
+     */
     private void registrarEnTransaccion(Pedido pedido) throws SQLException {
         try (Connection cn = conexionBD.obtenerConexion()) {
             cn.setAutoCommit(false);
@@ -221,6 +245,14 @@ public class GestionPedidoService {
         }
     }
 
+    /**
+     * Guarda el pedido generando un código de retiro; si el código ya existe, lo genera otra vez.
+     * <p>Trazabilidad: HU-04, RN-NEG-05.</p>
+     *
+     * @param pedido pedido que se registra
+     * @param cn conexión de la transacción en curso
+     * @throws SQLException si falla la inserción o se agotan los intentos
+     */
     private void guardarConCodigoUnico(Pedido pedido, Connection cn) throws SQLException {
         for (int intento = 1; ; intento++) {
             pedido.setCodigoRetiro(generarCodigoRetiro());
@@ -236,6 +268,12 @@ public class GestionPedidoService {
         }
     }
 
+    /**
+     * Genera un código de retiro aleatorio de 6 caracteres.
+     * <p>Trazabilidad: HU-04, RN-NEG-05.</p>
+     *
+     * @return el código generado
+     */
     private String generarCodigoRetiro() {
         StringBuilder codigo = new StringBuilder(6);
         for (int i = 0; i < 6; i++) {

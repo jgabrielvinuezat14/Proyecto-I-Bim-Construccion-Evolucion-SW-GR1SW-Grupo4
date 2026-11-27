@@ -48,6 +48,7 @@ public class PedidoServlet extends HttpServlet {
 
     /**
      * Muestra la pestaña «Mi pedido» o «Consultar pedido».
+     * <p>Trazabilidad: HU-02, HU-03, HU-05.</p>
      *
      * @param request  solicitud HTTP
      * @param response respuesta HTTP
@@ -67,6 +68,7 @@ public class PedidoServlet extends HttpServlet {
     /**
      * Ejecuta la acción del botón pulsado en «Mi pedido»: «Agregar al pedido»,
      * «Actualizar cantidad», «Quitar», «Revisar pedido» o «Confirmar pedido».
+     * <p>Trazabilidad: HU-02, HU-03, HU-04.</p>
      *
      * @param request  solicitud HTTP
      * @param response respuesta HTTP
@@ -103,6 +105,14 @@ public class PedidoServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Agrega un producto a la selección del cliente o suma la cantidad si ya estaba.
+     * <p>Trazabilidad: HU-02, RN-NEG-02.</p>
+     *
+     * @param request   solicitud HTTP con el producto y la cantidad
+     * @param seleccion productos elegidos guardados en la sesión
+     * @throws IllegalStateException si el producto no está disponible o no hay unidades suficientes
+     */
     private void agregar(HttpServletRequest request, List<DetallePedido> seleccion) {
         int cantidad = leerCantidad(request);
         String codigo = request.getParameter("producto");
@@ -118,6 +128,15 @@ public class PedidoServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Cambia la cantidad de un producto que ya está en la selección.
+     * <p>Trazabilidad: HU-02, RN-NEG-02.</p>
+     *
+     * @param request   solicitud HTTP con el código y la nueva cantidad
+     * @param seleccion productos elegidos guardados en la sesión
+     * @throws IllegalArgumentException si el producto no está en la selección
+     * @throws IllegalStateException    si el producto ya no está disponible o no hay unidades suficientes
+     */
     private void actualizar(HttpServletRequest request, List<DetallePedido> seleccion) {
         int cantidad = leerCantidad(request);
         String codigo = request.getParameter(CODIGO);
@@ -129,6 +148,15 @@ public class PedidoServlet extends HttpServlet {
         detalle.setCantidad(cantidad);
     }
 
+    /**
+     * Prepara la revisión del pedido antes de confirmarlo: exige al menos un producto
+     * y actualiza cada detalle con el precio vigente del menú.
+     * <p>Trazabilidad: HU-03, HU-04, RN-NEG-01, CA-04.4.</p>
+     *
+     * @param sesion    sesión del cliente
+     * @param seleccion productos elegidos
+     * @throws IllegalArgumentException si la selección está vacía
+     */
     private void revisar(HttpSession sesion, List<DetallePedido> seleccion) {
         if (seleccion.isEmpty()) {
             throw new IllegalArgumentException("El pedido debe incluir al menos un producto.");
@@ -142,6 +170,14 @@ public class PedidoServlet extends HttpServlet {
         sesion.setAttribute(REVISION, Boolean.TRUE);
     }
 
+    /**
+     * Verifica que la cantidad pedida no supere las unidades disponibles.
+     * <p>Trazabilidad: HU-02, RN-NEG-02.</p>
+     *
+     * @param producto producto solicitado
+     * @param cantidad cantidad total pedida
+     * @throws IllegalStateException si no hay unidades suficientes
+     */
     private void validarUnidades(Producto producto, int cantidad) {
         if (cantidad > producto.getCantidadDisponible()) {
             throw new IllegalStateException("Solo hay " + producto.getCantidadDisponible()
@@ -149,6 +185,14 @@ public class PedidoServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Lee la cantidad del formulario y verifica que sea un entero mayor que cero.
+     * <p>Trazabilidad: HU-02.</p>
+     *
+     * @param request solicitud HTTP
+     * @return la cantidad solicitada
+     * @throws IllegalArgumentException si la cantidad no es válida
+     */
     private int leerCantidad(HttpServletRequest request) {
         try {
             int cantidad = Integer.parseInt(request.getParameter("cantidad").trim());
@@ -161,16 +205,40 @@ public class PedidoServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Busca un producto entre los disponibles del menú.
+     * <p>Trazabilidad: HU-01, RN-NEG-02.</p>
+     *
+     * @param codigo código del producto
+     * @return el producto, o vacío si no está disponible
+     */
     private Optional<Producto> buscarDisponible(String codigo) {
         return productoService.consultarDisponibles().stream()
                 .filter(p -> p.getCodigo().equals(codigo))
                 .findFirst();
     }
 
+    /**
+     * Busca un producto dentro de la selección del cliente.
+     *
+     * @param seleccion productos elegidos
+     * @param codigo    código del producto
+     * @return el detalle, o vacío si no está en la selección
+     */
     private Optional<DetallePedido> buscarEnSeleccion(List<DetallePedido> seleccion, String codigo) {
         return seleccion.stream().filter(d -> d.getProducto().getCodigo().equals(codigo)).findFirst();
     }
 
+    /**
+     * Muestra la página del pedido con el menú, la selección, el total y,
+     * si existe, el pedido recién confirmado con su código de retiro.
+     * <p>Trazabilidad: HU-02, HU-03, HU-04.</p>
+     *
+     * @param request  solicitud HTTP
+     * @param response respuesta HTTP
+     * @throws ServletException si falla la vista
+     * @throws IOException      si falla la escritura de la respuesta
+     */
     private void mostrarMiPedido(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession sesion = request.getSession();
@@ -189,6 +257,15 @@ public class PedidoServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/vistas/mi-pedido.jsp").forward(request, response);
     }
 
+    /**
+     * Muestra los pedidos del cliente y el detalle del pedido buscado por código de retiro.
+     * <p>Trazabilidad: HU-05, RN-NEG-06.</p>
+     *
+     * @param request  solicitud HTTP
+     * @param response respuesta HTTP
+     * @throws ServletException si falla la vista
+     * @throws IOException      si falla la escritura de la respuesta
+     */
     private void mostrarConsulta(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String codigoCliente = codigoCliente(request.getSession());
@@ -209,6 +286,14 @@ public class PedidoServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/vistas/consultar-pedido.jsp").forward(request, response);
     }
 
+    /**
+     * Obtiene la selección guardada en la sesión o crea una vacía.
+     * La selección no se guarda en la base de datos hasta confirmar el pedido.
+     * <p>Trazabilidad: HU-02.</p>
+     *
+     * @param sesion sesión del cliente
+     * @return productos elegidos
+     */
     @SuppressWarnings("unchecked")
     private List<DetallePedido> obtenerSeleccion(HttpSession sesion) {
         List<DetallePedido> seleccion = (List<DetallePedido>) sesion.getAttribute(SELECCION);
@@ -220,6 +305,13 @@ public class PedidoServlet extends HttpServlet {
         return seleccion;
     }
 
+    /**
+     * Obtiene el código del cliente que inició sesión.
+     * <p>Trazabilidad: HU-09.</p>
+     *
+     * @param sesion sesión HTTP
+     * @return el código del cliente, o {@code null} si no hay sesión de cliente
+     */
     private String codigoCliente(HttpSession sesion) {
         Cliente cliente = (Cliente) sesion.getAttribute("cliente");
         return cliente == null ? null : cliente.getCodigo();

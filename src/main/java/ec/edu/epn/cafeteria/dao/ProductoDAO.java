@@ -147,6 +147,13 @@ public class ProductoDAO {
         }
     }
 
+    /**
+     * Ejecuta una consulta de productos sin parámetros.
+     *
+     * @param sql consulta de productos
+     * @return los productos encontrados
+     * @throws SQLException si falla la consulta
+     */
     private List<Producto> listar(String sql) throws SQLException {
         List<Producto> productos = new ArrayList<>();
         try (Connection cn = conexionBD.obtenerConexion();
@@ -159,6 +166,13 @@ public class ProductoDAO {
         return productos;
     }
 
+    /**
+     * Convierte una fila de dbo.Producto en un objeto {@link Producto}.
+     *
+     * @param rs fila actual del resultado
+     * @return el producto leído
+     * @throws SQLException si falla la consulta
+     */
     private Producto mapear(ResultSet rs) throws SQLException {
         return new Producto(rs.getString("codigo"), rs.getString("nombre"), rs.getBigDecimal("precio"),
                 rs.getBoolean("disponible"), rs.getInt("cantidad_disponible"));

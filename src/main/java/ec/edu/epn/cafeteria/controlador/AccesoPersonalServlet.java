@@ -40,6 +40,7 @@ public class AccesoPersonalServlet extends HttpServlet {
 
     /**
      * Muestra el formulario de acceso del personal o cierra la sesión activa si se solicita salir.
+     * <p>Trazabilidad: HU-10.</p>
      *
      * @param request  solicitud HTTP
      * @param response respuesta HTTP
@@ -63,6 +64,7 @@ public class AccesoPersonalServlet extends HttpServlet {
 
     /**
      * Procesa la autenticación del personal o el cierre de su sesión.
+     * <p>Trazabilidad: HU-10, RNF-04.</p>
      *
      * @param request  solicitud HTTP con las credenciales del formulario
      * @param response respuesta HTTP
@@ -97,6 +99,14 @@ public class AccesoPersonalServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Cierra la sesión del personal y redirige al menú.
+     * <p>Trazabilidad: HU-10, RNF-04.</p>
+     *
+     * @param request  solicitud HTTP con la sesión actual
+     * @param response respuesta HTTP usada para redirigir
+     * @throws IOException si falla la redirección
+     */
     private void cerrarSesion(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession sesion = request.getSession(false);
         if (sesion != null) {
@@ -106,6 +116,14 @@ public class AccesoPersonalServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/menu");
     }
 
+    /**
+     * Lee un parámetro del formulario aceptando un nombre alternativo.
+     *
+     * @param request     solicitud HTTP
+     * @param principal   nombre principal del parámetro
+     * @param alternativo nombre alternativo del parámetro
+     * @return el valor encontrado o {@code null} si no se envió
+     */
     private String leerParametro(HttpServletRequest request, String principal, String alternativo) {
         String valor = request.getParameter(principal);
         return valor != null ? valor : request.getParameter(alternativo);

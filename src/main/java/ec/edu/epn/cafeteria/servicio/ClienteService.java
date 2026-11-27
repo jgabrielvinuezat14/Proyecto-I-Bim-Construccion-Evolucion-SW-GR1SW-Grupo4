@@ -172,6 +172,14 @@ public class ClienteService {
         }
     }
 
+    /**
+     * Comprueba la contraseña ingresada contra el hash BCrypt guardado.
+     * <p>Trazabilidad: HU-09, RNF-04.</p>
+     *
+     * @param contrasenaPlana contraseña ingresada
+     * @param hashAlmacenado hash BCrypt guardado en la base de datos
+     * @return {@code true} si la contraseña es correcta
+     */
     private boolean verificarContrasena(String contrasenaPlana, String hashAlmacenado) {
         if (hashAlmacenado == null || hashAlmacenado.isBlank()) {
             return false;
@@ -186,10 +194,23 @@ public class ClienteService {
         }
     }
 
+    /**
+     * Indica si un texto es nulo o está en blanco.
+     *
+     * @param texto texto a revisar
+     * @return {@code true} si está vacío
+     */
     private boolean esVacio(String texto) {
         return texto == null || texto.isBlank();
     }
 
+    /**
+     * Crea el error que se muestra cuando falla el acceso a la base de datos.
+     * <p>Trazabilidad: RNF-01.</p>
+     *
+     * @param e error original de SQL
+     * @return excepción con un mensaje comprensible para el usuario
+     */
     private IllegalStateException errorBD(SQLException e) {
         return new IllegalStateException("No se pudo acceder a la base de datos. Intente de nuevo.", e);
     }

@@ -28,6 +28,11 @@ import java.io.IOException;
 @WebFilter(urlPatterns = {"/admin/*", "/mi-pedido", "/consultar-pedido"})
 public class FiltroAcceso implements Filter {
 
+    /**
+     * No requiere inicialización.
+     *
+     * @param filterConfig configuración del filtro
+     */
     @Override
     public void init(FilterConfig filterConfig) {
         // Sin configuración adicional al iniciar el filtro
@@ -35,6 +40,7 @@ public class FiltroAcceso implements Filter {
 
     /**
      * Verifica la sesión activa según la ruta solicitada antes de continuar la cadena.
+     * <p>Trazabilidad: HU-09, HU-10, RNF-04.</p>
      *
      * @param request  solicitud entrante
      * @param response respuesta saliente
@@ -72,11 +78,21 @@ public class FiltroAcceso implements Filter {
         chain.doFilter(request, response);
     }
 
+    /**
+     * No tiene recursos que liberar.
+     */
     @Override
     public void destroy() {
         // Sin recursos por liberar
     }
 
+    /**
+     * Evita que el navegador guarde en caché las páginas protegidas,
+     * para que no se vean después de cerrar sesión.
+     * <p>Trazabilidad: HU-09, HU-10, RNF-04.</p>
+     *
+     * @param response respuesta HTTP
+     */
     private void deshabilitarCache(HttpServletResponse response) {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");

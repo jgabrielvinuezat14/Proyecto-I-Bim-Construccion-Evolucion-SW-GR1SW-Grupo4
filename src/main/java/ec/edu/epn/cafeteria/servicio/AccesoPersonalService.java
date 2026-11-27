@@ -76,6 +76,13 @@ public class AccesoPersonalService {
         return true;
     }
 
+    /**
+     * Lee una variable de entorno o, si no existe, una propiedad del sistema.
+     * <p>Trazabilidad: HU-10, RNF-04.</p>
+     *
+     * @param nombre nombre de la variable
+     * @return el valor, o {@code null} si no está configurada
+     */
     private static String leerVariableSistema(String nombre) {
         String valor = System.getenv(nombre);
         if (valor == null || valor.isBlank()) {
@@ -84,6 +91,14 @@ public class AccesoPersonalService {
         return valor;
     }
 
+    /**
+     * Compara dos textos en tiempo constante para no revelar información por el tiempo de respuesta.
+     * <p>Trazabilidad: HU-10, RNF-04.</p>
+     *
+     * @param recibido valor ingresado
+     * @param esperado valor configurado
+     * @return {@code true} si son iguales
+     */
     private boolean igualesEnTiempoConstante(String recibido, String esperado) {
         return MessageDigest.isEqual(
                 recibido.getBytes(StandardCharsets.UTF_8),
@@ -91,6 +106,12 @@ public class AccesoPersonalService {
         );
     }
 
+    /**
+     * Indica si un texto es nulo o está en blanco.
+     *
+     * @param valor texto a revisar
+     * @return {@code true} si está vacío
+     */
     private boolean esVacio(String valor) {
         return valor == null || valor.isBlank();
     }

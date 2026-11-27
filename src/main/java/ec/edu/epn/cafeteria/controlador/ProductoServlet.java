@@ -32,6 +32,7 @@ public class ProductoServlet extends HttpServlet {
 
     /**
      * Muestra el menú del cliente o la tabla de administración de productos.
+     * <p>Trazabilidad: HU-01, HU-06.</p>
      *
      * @param request  solicitud HTTP
      * @param response respuesta HTTP
@@ -56,6 +57,7 @@ public class ProductoServlet extends HttpServlet {
 
     /**
      * Registra un producto nuevo o guarda los cambios de uno existente.
+     * <p>Trazabilidad: HU-06, RN-NEG-03.</p>
      *
      * @param request  solicitud HTTP con los campos del formulario
      * @param response respuesta HTTP
@@ -82,6 +84,16 @@ public class ProductoServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Muestra la lista de productos y, si corresponde, el formulario para crear o editar.
+     * <p>Trazabilidad: HU-06.</p>
+     *
+     * @param request    solicitud HTTP
+     * @param response   respuesta HTTP
+     * @param formulario formulario que se debe mostrar, o {@code null}
+     * @throws ServletException si falla la vista
+     * @throws IOException      si falla la escritura de la respuesta
+     */
     private void mostrarAdministracion(HttpServletRequest request, HttpServletResponse response, String formulario)
             throws ServletException, IOException {
         request.setAttribute("productos", productoService.consultarTodos());
@@ -100,6 +112,14 @@ public class ProductoServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/vistas/admin-productos.jsp").forward(request, response);
     }
 
+    /**
+     * Lee y valida el formato de los datos del formulario de producto.
+     * <p>Trazabilidad: HU-06, RN-NEG-03, RNF-02.</p>
+     *
+     * @param request solicitud HTTP con el formulario
+     * @return producto con código, nombre, precio, unidades y disponibilidad
+     * @throws IllegalArgumentException si el precio o las unidades no son números válidos
+     */
     private Producto leerFormulario(HttpServletRequest request) {
         Producto producto = new Producto();
         String codigo = request.getParameter("codigo");

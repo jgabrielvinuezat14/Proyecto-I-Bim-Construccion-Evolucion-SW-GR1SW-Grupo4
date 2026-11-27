@@ -128,6 +128,15 @@ public class ClienteDAO {
         return cliente;
     }
 
+    /**
+     * Ejecuta una consulta parametrizada que devuelve como máximo un cliente.
+     * <p>Trazabilidad: HU-09, RNF-04.</p>
+     *
+     * @param sql consulta con un parámetro
+     * @param parametro valor del parámetro
+     * @return el cliente, o vacío si no existe
+     * @throws SQLException si falla la consulta
+     */
     private Optional<Cliente> buscarUnico(String sql, String parametro) throws SQLException {
         try (Connection cn = conexionBD.obtenerConexion();
              PreparedStatement ps = cn.prepareStatement(sql)) {
@@ -138,6 +147,13 @@ public class ClienteDAO {
         }
     }
 
+    /**
+     * Convierte una fila de dbo.Cliente en un objeto {@link Cliente}.
+     *
+     * @param rs fila actual del resultado
+     * @return el cliente leído
+     * @throws SQLException si falla la consulta
+     */
     private Cliente mapear(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();
         cliente.setCodigo(rs.getString("codigo_cliente"));

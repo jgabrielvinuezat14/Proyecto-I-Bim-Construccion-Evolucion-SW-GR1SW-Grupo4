@@ -34,6 +34,7 @@ public class GestionPedidoServlet extends HttpServlet {
 
     /**
      * Muestra la lista de pedidos filtrada por estado y, si se pide, el detalle de un pedido.
+     * <p>Trazabilidad: HU-07, RN-03, RN-NEG-06.</p>
      *
      * @param request  solicitud HTTP (parámetros opcionales «estado» y «detalle»)
      * @param response respuesta HTTP
@@ -65,6 +66,7 @@ public class GestionPedidoServlet extends HttpServlet {
     /**
      * Avanza el estado de un pedido («Iniciar preparación», «Marcar como listo») o registra
      * su entrega («Registrar entrega»).
+     * <p>Trazabilidad: HU-08, RN-04, RN-NEG-06, RN-NEG-07.</p>
      *
      * @param request  solicitud HTTP
      * @param response respuesta HTTP
@@ -92,6 +94,13 @@ public class GestionPedidoServlet extends HttpServlet {
         response.sendRedirect(destino);
     }
 
+    /**
+     * Convierte el estado elegido en el filtro; si no es válido usa PENDIENTE.
+     * <p>Trazabilidad: HU-07, RN-NEG-06.</p>
+     *
+     * @param valor nombre del estado enviado en la solicitud
+     * @return el estado correspondiente
+     */
     private EstadoPedido leerEstado(String valor) {
         try {
             return valor == null ? EstadoPedido.PENDIENTE : EstadoPedido.valueOf(valor);

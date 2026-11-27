@@ -130,6 +130,13 @@ public class ProductoService {
         }
     }
 
+    /**
+     * Valida el código, el nombre, el precio y las unidades de un producto.
+     * <p>Trazabilidad: HU-06, RN-NEG-03, RNF-02.</p>
+     *
+     * @param producto producto que se valida
+     * @throws IllegalArgumentException si algún dato no es válido
+     */
     private void validar(Producto producto) {
         String codigo = producto.getCodigo();
         if (codigo == null || codigo.isBlank() || codigo.length() > 10) {
@@ -147,6 +154,13 @@ public class ProductoService {
         }
     }
 
+    /**
+     * Crea el error que se muestra cuando falla el acceso a la base de datos.
+     * <p>Trazabilidad: RNF-01.</p>
+     *
+     * @param e error original de SQL
+     * @return excepción con un mensaje comprensible para el usuario
+     */
     private IllegalStateException errorBD(SQLException e) {
         return new IllegalStateException("No se pudo acceder a la base de datos. Intente de nuevo.", e);
     }

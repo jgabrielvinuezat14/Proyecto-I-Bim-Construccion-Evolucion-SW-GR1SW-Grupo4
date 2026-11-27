@@ -45,6 +45,7 @@ public class ClienteServlet extends HttpServlet {
 
     /**
      * Muestra el formulario de inicio de sesión o de registro, o cierra la sesión activa.
+     * <p>Trazabilidad: HU-09.</p>
      *
      * @param request  solicitud HTTP
      * @param response respuesta HTTP
@@ -73,6 +74,7 @@ public class ClienteServlet extends HttpServlet {
 
     /**
      * Procesa el inicio de sesión, el registro de un nuevo cliente o el cierre de sesión.
+     * <p>Trazabilidad: HU-09, RNF-04.</p>
      *
      * @param request  solicitud HTTP con los campos del formulario
      * @param response respuesta HTTP
@@ -94,6 +96,15 @@ public class ClienteServlet extends HttpServlet {
         procesarLogin(request, response);
     }
 
+    /**
+     * Autentica al cliente con su correo institucional y contraseña e inicia su sesión.
+     * <p>Trazabilidad: HU-09, RNF-04.</p>
+     *
+     * @param request  solicitud HTTP con el correo y la contraseña
+     * @param response respuesta HTTP
+     * @throws ServletException si falla la vista de inicio de sesión
+     * @throws IOException      si falla la redirección
+     */
     private void procesarLogin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String correo = leerParametro(request, CORREO, "correoInstitucional");
@@ -111,6 +122,15 @@ public class ClienteServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Registra un cliente nuevo y muestra su código de cliente.
+     * <p>Trazabilidad: HU-09, RNF-01, RNF-04, ADR-05.</p>
+     *
+     * @param request  solicitud HTTP con los datos del formulario de registro
+     * @param response respuesta HTTP
+     * @throws ServletException si falla la vista de registro
+     * @throws IOException      si falla la redirección
+     */
     private void procesarRegistro(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Cliente datos = leerFormularioRegistro(request);
@@ -132,6 +152,14 @@ public class ClienteServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Cierra la sesión del cliente y redirige al menú.
+     * <p>Trazabilidad: HU-09.</p>
+     *
+     * @param request  solicitud HTTP con la sesión actual
+     * @param response respuesta HTTP usada para redirigir
+     * @throws IOException si falla la redirección
+     */
     private void cerrarSesion(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession sesion = request.getSession(false);
         if (sesion != null) {
@@ -141,6 +169,14 @@ public class ClienteServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + RUTA_MENU);
     }
 
+    /**
+     * Crea la sesión del cliente guardando sus datos sin el hash de la contraseña.
+     * <p>Trazabilidad: HU-09, RNF-04.</p>
+     *
+     * @param request solicitud HTTP
+     * @param cliente cliente autenticado
+     * @return la sesión HTTP iniciada
+     */
     private HttpSession iniciarSesionHttp(HttpServletRequest request, Cliente cliente) {
         HttpSession sesion = request.getSession(true);
         sesion.removeAttribute("personal");
@@ -155,6 +191,13 @@ public class ClienteServlet extends HttpServlet {
         return sesion;
     }
 
+    /**
+     * Lee los datos del formulario de registro sin espacios sobrantes.
+     * <p>Trazabilidad: HU-09.</p>
+     *
+     * @param request solicitud HTTP con el formulario
+     * @return cliente con nombre, apellido, cédula, celular y correo institucional
+     */
     private Cliente leerFormularioRegistro(HttpServletRequest request) {
         Cliente cliente = new Cliente();
         cliente.setNombre(recortar(request.getParameter("nombre")));
@@ -165,11 +208,25 @@ public class ClienteServlet extends HttpServlet {
         return cliente;
     }
 
+    /**
+     * Lee un parámetro del formulario aceptando un nombre alternativo.
+     *
+     * @param request     solicitud HTTP
+     * @param principal   nombre principal del parámetro
+     * @param alternativo nombre alternativo del parámetro
+     * @return el valor encontrado o {@code null} si no se envió
+     */
     private String leerParametro(HttpServletRequest request, String principal, String alternativo) {
         String valor = request.getParameter(principal);
         return valor != null ? valor : request.getParameter(alternativo);
     }
 
+    /**
+     * Quita los espacios al inicio y al final de un texto.
+     *
+     * @param valor texto leído del formulario
+     * @return el texto sin espacios sobrantes, o {@code null}
+     */
     private String recortar(String valor) {
         return valor == null ? null : valor.trim();
     }

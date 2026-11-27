@@ -157,6 +157,14 @@ public class PedidoDAO {
         }
     }
 
+    /**
+     * Ejecuta una consulta de pedidos con un parámetro opcional.
+     *
+     * @param sql consulta de pedidos
+     * @param parametro valor del parámetro, o {@code null} si no tiene
+     * @return los pedidos encontrados
+     * @throws SQLException si falla la consulta
+     */
     private List<Pedido> listar(String sql, String parametro) throws SQLException {
         List<Pedido> pedidos = new ArrayList<>();
         try (Connection cn = conexionBD.obtenerConexion();
@@ -173,6 +181,15 @@ public class PedidoDAO {
         return pedidos;
     }
 
+    /**
+     * Carga los detalles de un pedido con su producto y el precio unitario registrado.
+     * <p>Trazabilidad: HU-05, HU-07, RN-NEG-04.</p>
+     *
+     * @param cn conexión abierta
+     * @param idPedido identificador del pedido
+     * @return los detalles del pedido
+     * @throws SQLException si falla la consulta
+     */
     private List<DetallePedido> cargarDetalles(Connection cn, long idPedido) throws SQLException {
         String sql = "SELECT d.id_detalle, d.cantidad, d.precio_unitario, pr.codigo, pr.nombre, pr.precio,"
                 + " pr.disponible, pr.cantidad_disponible"
@@ -197,6 +214,13 @@ public class PedidoDAO {
         return detalles;
     }
 
+    /**
+     * Convierte una fila de dbo.Pedido y dbo.Cliente en un objeto {@link Pedido}.
+     *
+     * @param rs fila actual del resultado
+     * @return el pedido leído
+     * @throws SQLException si falla la consulta
+     */
     private Pedido mapear(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();
         cliente.setCodigo(rs.getString("codigo_cliente"));

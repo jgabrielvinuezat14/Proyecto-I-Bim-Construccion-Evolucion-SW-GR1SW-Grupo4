@@ -39,6 +39,14 @@ public class ConexionBD {
         return DriverManager.getConnection(leer("DB_URL"), leer("DB_USER"), leer("DB_PASSWORD"));
     }
 
+    /**
+     * Lee una variable de conexión del entorno o de las propiedades del sistema.
+     * <p>Trazabilidad: RNF-04.</p>
+     *
+     * @param nombre nombre de la variable
+     * @return el valor configurado
+     * @throws IllegalStateException si la variable no está configurada
+     */
     private static String leer(String nombre) {
         String valor = System.getenv(nombre);
         if (valor == null || valor.isBlank()) {

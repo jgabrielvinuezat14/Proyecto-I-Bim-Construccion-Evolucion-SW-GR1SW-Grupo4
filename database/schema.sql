@@ -33,7 +33,6 @@ GO
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Cliente', N'U') IS NULL
 CREATE TABLE dbo.Cliente (
-    id_cliente      INT IDENTITY(1,1)  NOT NULL,
     codigo_cliente  VARCHAR(10)        NOT NULL,
     nombre          NVARCHAR(60)       NOT NULL,
     apellido        NVARCHAR(60)       NOT NULL,
@@ -42,8 +41,7 @@ CREATE TABLE dbo.Cliente (
     correo          NVARCHAR(120)      NOT NULL,
     contrasena_hash VARCHAR(100)       NOT NULL,
     fecha_registro  DATETIME2(0)       NOT NULL CONSTRAINT DF_Cliente_fecha DEFAULT SYSDATETIME(),
-    CONSTRAINT PK_Cliente PRIMARY KEY (id_cliente),
-    CONSTRAINT UQ_Cliente_codigo UNIQUE (codigo_cliente),
+    CONSTRAINT PK_Cliente PRIMARY KEY (codigo_cliente),
     CONSTRAINT UQ_Cliente_cedula UNIQUE (cedula),
     CONSTRAINT UQ_Cliente_correo UNIQUE (correo),
     CONSTRAINT CK_Cliente_cedula CHECK (cedula NOT LIKE '%[^0-9]%' AND LEN(cedula) = 10),
@@ -63,14 +61,12 @@ GO
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Producto', N'U') IS NULL
 CREATE TABLE dbo.Producto (
-    id_producto           INT IDENTITY(1,1)  NOT NULL,
     codigo                VARCHAR(10)        NOT NULL,
     nombre                NVARCHAR(100)      NOT NULL,
     precio                DECIMAL(10,2)      NOT NULL,
     unidades_disponibles  INT                NOT NULL CONSTRAINT DF_Producto_unidades DEFAULT 0,
     disponible            BIT                NOT NULL CONSTRAINT DF_Producto_disponible DEFAULT 1,
-    CONSTRAINT PK_Producto PRIMARY KEY (id_producto),
-    CONSTRAINT UQ_Producto_codigo UNIQUE (codigo),
+    CONSTRAINT PK_Producto PRIMARY KEY (codigo),
     CONSTRAINT CK_Producto_precio CHECK (precio > 0),
     CONSTRAINT CK_Producto_unidades CHECK (unidades_disponibles >= 0)
 );
@@ -85,13 +81,13 @@ IF OBJECT_ID(N'dbo.Pedido', N'U') IS NULL
 CREATE TABLE dbo.Pedido (
     id_pedido       INT IDENTITY(1,1)  NOT NULL,
     codigo_retiro   CHAR(6)            NOT NULL,
-    id_cliente      INT                NOT NULL,
+    codigo_cliente  VARCHAR(10)        NOT NULL,
     fecha_registro  DATETIME2(0)       NOT NULL CONSTRAINT DF_Pedido_fecha DEFAULT SYSDATETIME(),
     estado          VARCHAR(20)        NOT NULL CONSTRAINT DF_Pedido_estado DEFAULT 'PENDIENTE',
     total           DECIMAL(10,2)      NOT NULL,
     CONSTRAINT PK_Pedido PRIMARY KEY (id_pedido),
     CONSTRAINT UQ_Pedido_codigo_retiro UNIQUE (codigo_retiro),
-    CONSTRAINT FK_Pedido_Cliente FOREIGN KEY (id_cliente) REFERENCES dbo.Cliente (id_cliente),
+    CONSTRAINT FK_Pedido_Cliente FOREIGN KEY (codigo_cliente) REFERENCES dbo.Cliente (codigo_cliente),
     CONSTRAINT CK_Pedido_codigo_retiro CHECK (
         codigo_retiro COLLATE Latin1_General_BIN LIKE '[A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9]'
     ),
@@ -107,7 +103,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Pedido_estado')
 GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Pedido_cliente')
-    CREATE INDEX IX_Pedido_cliente ON dbo.Pedido (id_cliente);
+    CREATE INDEX IX_Pedido_cliente ON dbo.Pedido (codigo_cliente);
 GO
 
 /* ---------------------------------------------------------------------
@@ -119,14 +115,14 @@ IF OBJECT_ID(N'dbo.DetallePedido', N'U') IS NULL
 CREATE TABLE dbo.DetallePedido (
     id_detalle       INT IDENTITY(1,1)  NOT NULL,
     id_pedido        INT                NOT NULL,
-    id_producto      INT                NOT NULL,
+    codigo_producto  VARCHAR(10)        NOT NULL,
     cantidad         INT                NOT NULL,
     precio_unitario  DECIMAL(10,2)      NOT NULL,
     subtotal         AS (CAST(cantidad * precio_unitario AS DECIMAL(12,2))) PERSISTED,
     CONSTRAINT PK_DetallePedido PRIMARY KEY (id_detalle),
     CONSTRAINT FK_Detalle_Pedido FOREIGN KEY (id_pedido) REFERENCES dbo.Pedido (id_pedido),
-    CONSTRAINT FK_Detalle_Producto FOREIGN KEY (id_producto) REFERENCES dbo.Producto (id_producto),
-    CONSTRAINT UQ_Detalle_pedido_producto UNIQUE (id_pedido, id_producto),
+    CONSTRAINT FK_Detalle_Producto FOREIGN KEY (codigo_producto) REFERENCES dbo.Producto (codigo),
+    CONSTRAINT UQ_Detalle_pedido_producto UNIQUE (id_pedido, codigo_producto),
     CONSTRAINT CK_Detalle_cantidad CHECK (cantidad > 0),
     CONSTRAINT CK_Detalle_precio CHECK (precio_unitario > 0)
 );

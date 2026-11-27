@@ -1,0 +1,38 @@
+/* Estilos de la cafetería universitaria — Release 1.0 */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #1f2933; background: #f5f6f8; }
+.barra { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 12px 24px; background: #1f3864; color: #fff; }
+.marca { font-weight: bold; font-size: 18px; }
+.pestanas { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
+.pestanas a, .sesion a { color: #fff; text-decoration: none; padding: 6px 10px; border-radius: 4px; }
+.pestanas a:hover, .sesion a:hover { background: rgba(255, 255, 255, .15); }
+.sesion { display: flex; align-items: center; gap: 8px; }
+.sesion form { margin: 0; }
+main { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
+h1 { font-size: 24px; margin: 0 0 16px; }
+h2 { font-size: 18px; margin: 0 0 12px; }
+.tarjeta { background: #fff; border: 1px solid #d9dde3; border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+.tarjeta.angosta { max-width: 420px; }
+.tarjeta.exito { border-color: #2e7d32; }
+.tabla { width: 100%; border-collapse: collapse; background: #fff; margin-bottom: 12px; }
+.tabla th, .tabla td { border: 1px solid #d9dde3; padding: 8px; text-align: left; vertical-align: middle; }
+.tabla th { background: #1f3864; color: #fff; }
+.tabla tr.gris td { color: #8a929c; background: #f0f1f3; }
+.leyenda { display: inline-block; margin-left: 6px; padding: 2px 6px; border-radius: 4px; background: #d9dde3; color: #4b5563; font-size: 12px; }
+.fila { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; margin: 0; }
+.formulario { display: grid; gap: 10px; }
+.formulario label, .fila label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+input, select { padding: 6px 8px; border: 1px solid #b8bec7; border-radius: 4px; font-size: 14px; }
+button, .boton { display: inline-block; padding: 7px 12px; border: 0; border-radius: 4px; background: #2f5597; color: #fff; font-size: 14px; cursor: pointer; text-decoration: none; }
+button.secundario { background: #8a929c; }
+.mensaje { padding: 10px; border-radius: 4px; background: #e8f5e9; color: #1b5e20; }
+.error { padding: 10px; border-radius: 4px; background: #fdecea; color: #b71c1c; }
+.aviso { color: #4b5563; }
+.total { font-weight: bold; font-size: 16px; }
+.codigo { font-size: 22px; letter-spacing: 3px; }
+.estado { padding: 2px 6px; border-radius: 4px; font-size: 13px; background: #e5e7eb; }
+.estado.PENDIENTE { background: #fff3cd; }
+.estado.EN_PREPARACION { background: #cfe2ff; }
+.estado.LISTO_PARA_RETIRAR { background: #d1e7dd; }
+.estado.ENTREGADO { background: #e2e3e5; }
+.pie { text-align: center; color: #6b7280; font-size: 12px; padding: 24px; }

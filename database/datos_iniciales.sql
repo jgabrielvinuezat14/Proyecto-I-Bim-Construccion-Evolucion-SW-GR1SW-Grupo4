@@ -23,23 +23,24 @@ USING (VALUES
     ('P006', N'Agua',             0.75, 40, 1),
     ('P007', N'Almuerzo del día', 4.50,  0, 1),  -- sin unidades: no debe verse en el menú
     ('P008', N'Brownie',          1.50, 12, 0)   -- no disponible: no debe verse en el menú
-) AS origen (codigo, nombre, precio, unidades_disponibles, disponible)
+) AS origen (codigo, nombre, precio, cantidad_disponible, disponible)
 ON destino.codigo = origen.codigo
 WHEN NOT MATCHED THEN
-    INSERT (codigo, nombre, precio, unidades_disponibles, disponible)
-    VALUES (origen.codigo, origen.nombre, origen.precio, origen.unidades_disponibles, origen.disponible);
+    INSERT (codigo, nombre, precio, cantidad_disponible, disponible)
+    VALUES (origen.codigo, origen.nombre, origen.precio, origen.cantidad_disponible, origen.disponible);
 GO
 
 /* ---------- Clientes de prueba ----------
+   El código (C001, C002) lo genera la base con la secuencia seq_cliente.
    Contraseña de ambos clientes: Prueba#2026
    (se guarda solo su hash BCrypt, como exige HU-09). */
 MERGE dbo.Cliente AS destino
 USING (VALUES
-    ('C001', N'Cliente', N'Prueba', '1700000001', '0990000001', N'cliente.prueba@epn.edu.ec', '$2a$10$aj8rWCC3gNXBtRqihgzBguVMP41J3HNlPLiR57mfEWvmr8kOyVMv6'),
-    ('C002', N'Docente', N'Prueba', '1700000002', '0990000002', N'docente.prueba@epn.edu.ec', '$2a$10$aj8rWCC3gNXBtRqihgzBguVMP41J3HNlPLiR57mfEWvmr8kOyVMv6')
-) AS origen (codigo_cliente, nombre, apellido, cedula, celular, correo, contrasena_hash)
-ON destino.codigo_cliente = origen.codigo_cliente
+    (N'Cliente', N'Prueba', '1700000001', '0990000001', N'cliente.prueba@epn.edu.ec', '$2a$10$aj8rWCC3gNXBtRqihgzBguVMP41J3HNlPLiR57mfEWvmr8kOyVMv6'),
+    (N'Docente', N'Prueba', '1700000002', '0990000002', N'docente.prueba@epn.edu.ec', '$2a$10$aj8rWCC3gNXBtRqihgzBguVMP41J3HNlPLiR57mfEWvmr8kOyVMv6')
+) AS origen (nombre, apellido, cedula, celular, correo_institucional, contrasena_hash)
+ON destino.correo_institucional = origen.correo_institucional
 WHEN NOT MATCHED THEN
-    INSERT (codigo_cliente, nombre, apellido, cedula, celular, correo, contrasena_hash)
-    VALUES (origen.codigo_cliente, origen.nombre, origen.apellido, origen.cedula, origen.celular, origen.correo, origen.contrasena_hash);
+    INSERT (nombre, apellido, cedula, celular, correo_institucional, contrasena_hash)
+    VALUES (origen.nombre, origen.apellido, origen.cedula, origen.celular, origen.correo_institucional, origen.contrasena_hash);
 GO

@@ -60,7 +60,7 @@ if errorlevel 1 goto fallo
 
 echo.
 echo [4/4] Productos guardados en la base:
-docker exec cafeteria-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "%SA_PWD%" -C -W -Q "SET NOCOUNT ON; SELECT codigo, nombre, precio, unidades_disponibles, disponible FROM CafeteriaDB.dbo.Producto ORDER BY codigo"
+docker exec cafeteria-sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "%SA_PWD%" -C -W -Q "SET NOCOUNT ON; SELECT codigo, nombre, precio, cantidad_disponible, disponible FROM CafeteriaDB.dbo.Producto ORDER BY codigo"
 echo.
 echo Listo. La base CafeteriaDB esta creada y con datos de prueba.
 pause

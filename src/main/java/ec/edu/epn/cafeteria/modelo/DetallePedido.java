@@ -42,34 +42,74 @@ public class DetallePedido {
         return precioUnitario.multiply(BigDecimal.valueOf(cantidad)).setScale(2, RoundingMode.HALF_UP);
     }
 
+    /**
+     * Devuelve el identificador del detalle del pedido.
+     *
+     * @return el identificador del detalle del pedido
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Asigna el identificador del detalle del pedido.
+     *
+     * @param id el identificador del detalle del pedido
+     */
     public void setId(long id) {
         this.id = id;
     }
 
+    /**
+     * Devuelve la cantidad del detalle del pedido.
+     *
+     * @return la cantidad del detalle del pedido
+     */
     public int getCantidad() {
         return cantidad;
     }
 
+    /**
+     * Asigna la cantidad del detalle del pedido.
+     *
+     * @param cantidad la cantidad del detalle del pedido
+     */
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
 
+    /**
+     * Devuelve el precio unitario registrado al confirmar del detalle del pedido.
+     *
+     * @return el precio unitario registrado al confirmar del detalle del pedido
+     */
     public BigDecimal getPrecioUnitario() {
         return precioUnitario;
     }
 
+    /**
+     * Asigna el precio unitario registrado al confirmar del detalle del pedido.
+     *
+     * @param precioUnitario el precio unitario registrado al confirmar del detalle del pedido
+     */
     public void setPrecioUnitario(BigDecimal precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 
+    /**
+     * Devuelve el producto del detalle del pedido.
+     *
+     * @return el producto del detalle del pedido
+     */
     public Producto getProducto() {
         return producto;
     }
 
+    /**
+     * Asigna el producto del detalle del pedido.
+     *
+     * @param producto el producto del detalle del pedido
+     */
     public void setProducto(Producto producto) {
         this.producto = producto;
     }

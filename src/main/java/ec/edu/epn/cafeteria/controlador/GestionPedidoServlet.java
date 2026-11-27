@@ -3,6 +3,7 @@ package ec.edu.epn.cafeteria.controlador;
 import ec.edu.epn.cafeteria.modelo.EstadoPedido;
 import ec.edu.epn.cafeteria.modelo.Pedido;
 import ec.edu.epn.cafeteria.servicio.ConsultaPedidoService;
+import ec.edu.epn.cafeteria.servicio.GestionPedidoService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,15 +11,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Atiende la gestión de pedidos del personal: consulta y filtro por estado (HU-07).
+ * Atiende la gestión de pedidos del personal: consulta y filtro por estado (HU-07),
+ * avance de estado y registro de la entrega con el código de retiro (HU-08).
  */
 @WebServlet("/admin/pedidos")
 public class GestionPedidoServlet extends HttpServlet {
 
     private final transient ConsultaPedidoService consultaPedidoService = new ConsultaPedidoService();
+    private final transient GestionPedidoService gestionPedidoService = new GestionPedidoService();
 
     /**
      * Muestra la lista de pedidos filtrada por estado y, si se pide, el detalle de un pedido.
@@ -48,6 +53,36 @@ public class GestionPedidoServlet extends HttpServlet {
             request.setAttribute("error", e.getMessage());
         }
         request.getRequestDispatcher("/WEB-INF/vistas/admin-pedidos.jsp").forward(request, response);
+    }
+
+    /**
+     * Avanza el estado de un pedido («Iniciar preparación», «Marcar como listo») o registra
+     * su entrega («Registrar entrega»).
+     *
+     * @param request  solicitud HTTP
+     * @param response respuesta HTTP
+     * @throws IOException si falla la redirección
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String destino = request.getContextPath() + "/admin/pedidos";
+        try {
+            if ("entregar".equals(request.getParameter("accion"))) {
+                String codigo = request.getParameter("codigoRetiro");
+                gestionPedidoService.registrarEntrega(codigo);
+                request.getSession().setAttribute("mensaje",
+                        "Se registró la entrega del pedido «" + codigo.trim().toUpperCase() + "».");
+                destino += "?estado=ENTREGADO";
+            } else {
+                gestionPedidoService.avanzarEstado(Long.parseLong(request.getParameter("id")));
+                String codigo = request.getParameter("codigo");
+                destino += "?estado=" + request.getParameter("estado")
+                        + "&detalle=" + URLEncoder.encode(codigo, StandardCharsets.UTF_8);
+            }
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            request.getSession().setAttribute("error", e.getMessage());
+        }
+        response.sendRedirect(destino);
     }
 
     private EstadoPedido leerEstado(String valor) {

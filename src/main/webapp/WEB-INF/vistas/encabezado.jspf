@@ -1,0 +1,57 @@
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="en_US"/>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cafetería universitaria</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
+</head>
+<body>
+<header class="barra">
+    <span class="marca">Cafetería universitaria</span>
+    <nav class="pestanas">
+        <a href="${pageContext.request.contextPath}/menu">Menú</a>
+        <a href="${pageContext.request.contextPath}/mi-pedido">Mi pedido</a>
+        <a href="${pageContext.request.contextPath}/consultar-pedido">Consultar pedido</a>
+        <c:if test="${not empty sessionScope.personal}">
+            <a href="${pageContext.request.contextPath}/admin/productos">Administración del menú</a>
+            <a href="${pageContext.request.contextPath}/admin/pedidos">Gestión de pedidos</a>
+        </c:if>
+    </nav>
+    <div class="sesion">
+        <c:choose>
+            <c:when test="${not empty sessionScope.cliente}">
+                <span><c:out value="${sessionScope.cliente.nombre} (${sessionScope.cliente.codigo})"/></span>
+                <form method="post" action="${pageContext.request.contextPath}/logout">
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+            </c:when>
+            <c:when test="${not empty sessionScope.personal}">
+                <span>Personal de cafetería</span>
+                <form method="post" action="${pageContext.request.contextPath}/personal/salir">
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+            </c:when>
+            <c:otherwise>
+                <a href="${pageContext.request.contextPath}/login">Iniciar sesión</a>
+                <a href="${pageContext.request.contextPath}/personal/acceso">Acceso de personal</a>
+            </c:otherwise>
+        </c:choose>
+    </div>
+</header>
+<main>
+<c:if test="${not empty sessionScope.mensaje}">
+    <p class="mensaje"><c:out value="${sessionScope.mensaje}"/></p>
+    <c:remove var="mensaje" scope="session"/>
+</c:if>
+<c:if test="${not empty sessionScope.error}">
+    <p class="error"><c:out value="${sessionScope.error}"/></p>
+    <c:remove var="error" scope="session"/>
+</c:if>
+<c:if test="${not empty requestScope.error}">
+    <p class="error"><c:out value="${requestScope.error}"/></p>
+</c:if>

@@ -26,8 +26,10 @@ GO
    Cliente
    Cliente universitario (estudiante o docente). Según la especificación
    del cliente (sección 7), se identifica mediante un código y sus datos:
-   nombre, apellido, cédula, celular y correo institucional. El equipo
-   acordó que el cliente ingresa con su correo institucional.
+   nombre, apellido, cédula, celular y correo institucional.
+   Ampliación del equipo (HU-09): el cliente se registra e inicia sesión
+   con su correo institucional y una contraseña, que se guarda solo como
+   hash BCrypt (nunca en texto plano).
    --------------------------------------------------------------------- */
 IF OBJECT_ID(N'dbo.Cliente', N'U') IS NULL
 CREATE TABLE dbo.Cliente (
@@ -38,6 +40,7 @@ CREATE TABLE dbo.Cliente (
     cedula          CHAR(10)           NOT NULL,
     celular         VARCHAR(10)        NOT NULL,
     correo          NVARCHAR(120)      NOT NULL,
+    contrasena_hash VARCHAR(100)       NOT NULL,
     fecha_registro  DATETIME2(0)       NOT NULL CONSTRAINT DF_Cliente_fecha DEFAULT SYSDATETIME(),
     CONSTRAINT PK_Cliente PRIMARY KEY (id_cliente),
     CONSTRAINT UQ_Cliente_codigo UNIQUE (codigo_cliente),

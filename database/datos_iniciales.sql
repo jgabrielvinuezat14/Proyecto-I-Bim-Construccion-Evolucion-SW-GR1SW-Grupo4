@@ -30,14 +30,16 @@ WHEN NOT MATCHED THEN
     VALUES (origen.codigo, origen.nombre, origen.precio, origen.unidades_disponibles, origen.disponible);
 GO
 
-/* ---------- Clientes de prueba ---------- */
+/* ---------- Clientes de prueba ----------
+   Contraseña de ambos clientes: Prueba#2026
+   (se guarda solo su hash BCrypt, como exige HU-09). */
 MERGE dbo.Cliente AS destino
 USING (VALUES
-    ('C001', N'Cliente', N'Prueba', '1700000001', '0990000001', N'cliente.prueba@epn.edu.ec'),
-    ('C002', N'Docente', N'Prueba', '1700000002', '0990000002', N'docente.prueba@epn.edu.ec')
-) AS origen (codigo_cliente, nombre, apellido, cedula, celular, correo)
+    ('C001', N'Cliente', N'Prueba', '1700000001', '0990000001', N'cliente.prueba@epn.edu.ec', '$2a$10$aj8rWCC3gNXBtRqihgzBguVMP41J3HNlPLiR57mfEWvmr8kOyVMv6'),
+    ('C002', N'Docente', N'Prueba', '1700000002', '0990000002', N'docente.prueba@epn.edu.ec', '$2a$10$aj8rWCC3gNXBtRqihgzBguVMP41J3HNlPLiR57mfEWvmr8kOyVMv6')
+) AS origen (codigo_cliente, nombre, apellido, cedula, celular, correo, contrasena_hash)
 ON destino.codigo_cliente = origen.codigo_cliente
 WHEN NOT MATCHED THEN
-    INSERT (codigo_cliente, nombre, apellido, cedula, celular, correo)
-    VALUES (origen.codigo_cliente, origen.nombre, origen.apellido, origen.cedula, origen.celular, origen.correo);
+    INSERT (codigo_cliente, nombre, apellido, cedula, celular, correo, contrasena_hash)
+    VALUES (origen.codigo_cliente, origen.nombre, origen.apellido, origen.cedula, origen.celular, origen.correo, origen.contrasena_hash);
 GO

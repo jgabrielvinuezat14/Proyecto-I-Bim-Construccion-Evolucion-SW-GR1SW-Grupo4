@@ -15,6 +15,8 @@ Ambos scripts se pueden ejecutar varias veces sin duplicar datos.
 
 Con Docker Desktop abierto, dar doble clic en `levantar_bd.bat` (raíz del repositorio). Levanta SQL Server, crea las tablas, carga los datos de prueba y muestra los productos.
 
+Para borrar la base y crearla de nuevo con los datos de prueba (por ejemplo, después de cambiar `schema.sql`), dar doble clic en `reiniciar_bd.bat`.
+
 ## Levantar SQL Server
 
 Desde la raíz del repositorio:

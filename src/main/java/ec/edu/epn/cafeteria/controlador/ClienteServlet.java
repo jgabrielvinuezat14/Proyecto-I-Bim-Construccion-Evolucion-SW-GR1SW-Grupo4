@@ -112,10 +112,14 @@ public class ClienteServlet extends HttpServlet {
         request.setAttribute("clienteRegistro", datos);
         try {
             Cliente registrado = clienteService.registrarCliente(datos, contrasena);
-            HttpSession sesion = iniciarSesionHttp(request, registrado);
+            HttpSession anterior = request.getSession(false);
+            if (anterior != null) {
+                anterior.invalidate();
+            }
+            HttpSession sesion = request.getSession(true);
             sesion.setAttribute(MENSAJE, "Cuenta registrada correctamente. Su código de cliente es "
                     + registrado.getCodigo() + ".");
-            response.sendRedirect(request.getContextPath() + RUTA_MENU);
+            response.sendRedirect(request.getContextPath() + "/login");
         } catch (IllegalArgumentException | IllegalStateException e) {
             request.setAttribute("error", e.getMessage());
             request.getRequestDispatcher("/WEB-INF/vistas/registro.jsp").forward(request, response);

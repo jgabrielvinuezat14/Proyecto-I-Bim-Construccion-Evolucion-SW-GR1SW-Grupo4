@@ -1,0 +1,64 @@
+# Flujo de Integración Continua (CI) — Cafetería universitaria (Release 1.0)
+# Asignatura: Construcción y Evolución de Software (GR1SW - Grupo 4)
+#
+# Verifica automáticamente en cada Pull Request y push hacia 'main':
+#   1. Compilación limpia del código fuente con Java 21 (JDK Temurin).
+#   2. Ejecución de la suite de pruebas unitarias JUnit 5 (DAOs en memoria).
+#   3. Empaquetado del artefacto desplegable 'cafeteria.war' para Apache Tomcat 9.
+#   4. Publicación de reportes Surefire y artefacto WAR como evidencia de ejecución.
+
+name: CI - Compilación y Pruebas Unitarias
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compilar-y-probar:
+    name: Build, JUnit 5 & WAR (Java 21)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código fuente del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21 (Eclipse Temurin) y caché de Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Verificar versiones de herramientas (Java y Maven)
+        run: |
+          java -version
+          mvn -version
+
+      - name: Compilar proyecto y ejecutar pruebas unitarias (JUnit 5)
+        run: mvn -B clean test
+
+      - name: Empaquetar aplicación web (cafeteria.war)
+        run: mvn -B package -DskipTests
+
+      - name: Publicar reportes de pruebas unitarias (Surefire)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reportes-junit-surefire
+          path: target/surefire-reports/
+          retention-days: 14
+
+      - name: Publicar artefacto desplegable (cafeteria.war)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cafeteria-release-war
+          path: target/cafeteria.war
+          retention-days: 14

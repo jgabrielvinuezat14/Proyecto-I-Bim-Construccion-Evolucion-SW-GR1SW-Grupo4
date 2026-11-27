@@ -53,7 +53,7 @@ mvn -B clean package
 
 El script existente inicializa `CafeteriaDB` y sus datos de ejemplo. El WAR queda en `target/cafeteria.war`. Para Tomcat instalado localmente, configurar las variables de entorno de la aplicación en el proceso de Tomcat, copiar el WAR a `webapps` e iniciar el servidor. Abrir `http://localhost:8080/cafeteria/menu`. Si Tomcat se ejecuta en Docker, usar `host.docker.internal` en la URL JDBC en lugar de `localhost`.
 
-Consultar el [manual de instalación](docs/instalacion/Manual_Instalacion_Cafeteria_Release_1.0.pdf) para más detalles.
+Consultar el [manual de instalación](https://github.com/jgabrielvinuezat14/Proyecto-I-Bim-Construccion-Evolucion-SW-GR1SW-Grupo4/blob/documentacion/docs/instalacion/Manual_Instalacion_Cafeteria_Release_1.0.pdf) para más detalles.
 
 ## 5. Pruebas unitarias
 
@@ -143,14 +143,14 @@ reiniciar_bd.bat         Restauración de la base principal (destructiva)
 
 ## 8. Documentación y colaboración
 
-La documentación académica está disponible en `docs/` de la rama principal desde el PR #35; la rama `documentacion` conserva su historial.
+La documentación académica está en la carpeta `docs/` de la rama [`documentacion`](https://github.com/jgabrielvinuezat14/Proyecto-I-Bim-Construccion-Evolucion-SW-GR1SW-Grupo4/tree/documentacion/docs). La rama `main` contiene solo el código.
 
-- [Backlog del Release 1.0](docs/requisitos/Backlog_Cafeteria_Release_1.0.pdf)
-- [Diseño](docs/diseno)
-- [Casos de prueba y resultados](docs/pruebas)
-- [Informe de resultados de pruebas](docs/pruebas/Informe_Resultados_Pruebas_Release_1.0.pdf)
-- [Reporte de análisis estático](docs/analisis-estatico/Reporte_Analisis_Estatico_Cafeteria_Release_1.0.pdf)
-- [Manual de instalación](docs/instalacion)
+- [Backlog del Release 1.0](https://github.com/jgabrielvinuezat14/Proyecto-I-Bim-Construccion-Evolucion-SW-GR1SW-Grupo4/blob/documentacion/docs/requisitos/Backlog_Cafeteria_Release_1.0.pdf)
+- [Diseño](https://github.com/jgabrielvinuezat14/Proyecto-I-Bim-Construccion-Evolucion-SW-GR1SW-Grupo4/tree/documentacion/docs/diseno)
+- [Casos de prueba y resultados](https://github.com/jgabrielvinuezat14/Proyecto-I-Bim-Construccion-Evolucion-SW-GR1SW-Grupo4/tree/documentacion/docs/pruebas)
+- [Informe de resultados de pruebas](https://github.com/jgabrielvinuezat14/Proyecto-I-Bim-Construccion-Evolucion-SW-GR1SW-Grupo4/blob/documentacion/docs/pruebas/Informe_Resultados_Pruebas_Release_1.0.pdf)
+- [Reporte de análisis estático](https://github.com/jgabrielvinuezat14/Proyecto-I-Bim-Construccion-Evolucion-SW-GR1SW-Grupo4/blob/documentacion/docs/analisis-estatico/Reporte_Analisis_Estatico_Cafeteria_Release_1.0.pdf)
+- [Manual de instalación](https://github.com/jgabrielvinuezat14/Proyecto-I-Bim-Construccion-Evolucion-SW-GR1SW-Grupo4/tree/documentacion/docs/instalacion)
 
 Flujo de trabajo: issue por tarea, rama por cambio, Conventional Commits, Pull Request y revisión de otro integrante antes de integrar. No subir credenciales, `target/`, archivos temporales de Python ni evidencias con información sensible.
 
